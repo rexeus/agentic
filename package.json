@@ -1,0 +1,23 @@
+{
+  "name": "@rexeus/agentic",
+  "version": "0.1.0",
+  "description": "Multi-agent development toolkit for Claude Code. Specialized agents, conventions, review workflows, and quality guardrails for TypeScript and JavaScript projects.",
+  "keywords": [
+    "agentic-coding",
+    "claude-code",
+    "code-quality",
+    "code-review",
+    "conventions",
+    "plugin",
+    "refactoring"
+  ],
+  "license": "Apache-2.0",
+  "author": "Dennis Wentzien",
+  "scripts": {
+    "format": "oxfmt"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.36.0"
+  },
+  "packageManager": "pnpm@10.19.0"
+}

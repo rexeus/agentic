@@ -1,0 +1,20 @@
+{
+  "name": "agentic",
+  "version": "0.1.0",
+  "description": "Multi-agent development toolkit for Claude Code. Specialized agents, conventions, review workflows, and quality guardrails for TypeScript and JavaScript projects.",
+  "author": {
+    "name": "Dennis Wentzien",
+    "url": "https://github.com/rexeus"
+  },
+  "repository": "https://github.com/rexeus/agentic",
+  "license": "Apache-2.0",
+  "keywords": [
+    "agentic-coding",
+    "claude-code",
+    "code-quality",
+    "code-review",
+    "conventions",
+    "plugin",
+    "refactoring"
+  ]
+}

@@ -6,7 +6,7 @@ description: >
   Use proactively for any non-trivial development task.
 tools: Agent(scout, analyst, architect, developer, reviewer, tester, refiner), Read, Write, Edit, Grep, Glob, Bash(git *), Bash(ls *), Bash(wc *)
 model: inherit
-color: purple
+color: lavender
 skills:
   - conventions
   - quality-patterns

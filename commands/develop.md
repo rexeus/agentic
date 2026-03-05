@@ -2,7 +2,6 @@
 description: Start implementation of a planned feature or task. Runs the full pipeline from understanding through testing.
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash, Agent
 argument-hint: "<task description or 'continue'>"
-disable-model-invocation: true
 ---
 
 # Develop

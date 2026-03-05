@@ -6,7 +6,7 @@ description: >
   but never fixes them. Applies multiple review lenses via loaded skills.
 tools: Read, Grep, Glob, Bash(git diff *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(gh pr *)
 model: inherit
-color: red
+color: orange
 skills:
   - conventions
   - quality-patterns

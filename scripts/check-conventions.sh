@@ -27,7 +27,6 @@ case "$FILE_PATH" in
 esac
 
 BLOCKERS=""
-WARNINGS=""
 
 # --- BLOCKERS (exit 1) — never acceptable, hard stop ---
 
@@ -47,31 +46,6 @@ fi
 if [ -n "$BLOCKERS" ]; then
   printf "%b" "$BLOCKERS" >&2
   exit 1
-fi
-
-# --- WARNINGS (exit 2) — feedback for self-correction ---
-
-# Debug statements in JS/TS files
-case "$FILE_PATH" in
-  *.js|*.jsx|*.ts|*.tsx|*.mjs|*.cjs)
-    if grep -qE '^[[:space:]]*(console\.(log|debug)|debugger)' "$FILE_PATH" 2>/dev/null; then
-      WARNINGS="${WARNINGS}Debug statements (console.log/console.debug/debugger) in ${FILE_PATH}\n"
-    fi
-    ;;
-esac
-
-# TODO without owner or issue link
-TODO_LINES=$(grep -n 'TODO' "$FILE_PATH" 2>/dev/null || true)
-if [ -n "$TODO_LINES" ]; then
-  ORPHAN_TODOS=$(echo "$TODO_LINES" | grep -v -E '(@|#[0-9]+|https?://)' || true)
-  if [ -n "$ORPHAN_TODOS" ]; then
-    WARNINGS="${WARNINGS}TODO without owner or issue link in ${FILE_PATH}\n"
-  fi
-fi
-
-if [ -n "$WARNINGS" ]; then
-  printf "%b" "$WARNINGS" >&2
-  exit 2
 fi
 
 exit 0

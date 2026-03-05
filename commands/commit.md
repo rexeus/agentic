@@ -2,7 +2,6 @@
 description: Create a commit from staged changes using Conventional Commits format
 allowed-tools: Bash(git diff *), Bash(git status *), Bash(git log *), Bash(git commit *), Read
 argument-hint: "[commit message]"
-disable-model-invocation: true
 ---
 
 # Commit

@@ -2,7 +2,6 @@
 description: Plan a new feature or task. Critically evaluates requirements, presents options, and produces an implementation plan.
 allowed-tools: Read, Grep, Glob, Bash(git log *), Bash(git diff *), Agent
 argument-hint: "<feature or task description>"
-disable-model-invocation: true
 ---
 
 # Plan

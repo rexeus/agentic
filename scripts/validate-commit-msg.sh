@@ -23,12 +23,13 @@ fi
 # Handles: git commit -m "msg", git commit -m 'msg', git commit -m "$(cat <<'EOF'\n...\nEOF\n)"
 MSG=""
 if printf '%s\n' "$COMMAND" | grep -qE '\-m[[:space:]]'; then
-  # Try to extract message between quotes after -m
-  MSG=$(printf '%s\n' "$COMMAND" | sed -n 's/.*-m[[:space:]]*["'"'"']\(.*\)["'"'"'].*/\1/p' | head -1)
-
-  # Handle HEREDOC format: extract first line of the message
-  if [ -z "$MSG" ] && printf '%s\n' "$COMMAND" | grep -q 'cat <<'; then
-    MSG=$(printf '%s\n' "$COMMAND" | sed -n "/cat <<.*EOF/,/EOF/p" | sed '1d;$d' | head -1)
+  # Check for HEREDOC format first — must come before simple extraction,
+  # otherwise the sed below will match "$(cat <<" as message content
+  if printf '%s\n' "$COMMAND" | grep -q 'cat <<'; then
+    MSG=$(printf '%s\n' "$COMMAND" | sed -n "/cat <<.*EOF/,/EOF/p" | sed '1d;$d')
+  else
+    # Simple: git commit -m "msg" or git commit -m 'msg'
+    MSG=$(printf '%s\n' "$COMMAND" | sed -n 's/.*-m[[:space:]]*["'"'"']\(.*\)["'"'"'].*/\1/p' | head -1)
   fi
 fi
 
@@ -51,7 +52,7 @@ fi
 
 # 2. Format: type(scope)?: description or type(scope)?!: description
 if ! printf '%s\n' "$FIRST_LINE" | grep -qE "^($TYPES)(\([a-zA-Z0-9_./-]+\))?!?:[[:space:]].+"; then
-  ISSUES="${ISSUES}Format must be: type(scope): description — colon and space required\n"
+  ISSUES="${ISSUES}Format must be: type[optional scope]: description — colon and space required\n"
 fi
 
 # 3. Description must be lowercase after ': '

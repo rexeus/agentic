@@ -6,7 +6,7 @@ description: >
   is needed before design or debugging. Thorough and methodical.
 tools: Read, Grep, Glob, Bash(wc *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *)
 model: sonnet
-color: magenta
+color: rose
 hooks:
   Stop:
     - hooks:

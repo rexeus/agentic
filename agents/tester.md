@@ -6,7 +6,7 @@ description: >
   reliability. Writes test code but never modifies source code.
 tools: Read, Write, Edit, Grep, Glob, Bash(npm test *), Bash(npm run test*), Bash(npx *), Bash(pnpm *), Bash(yarn *), Bash(node *), Bash(git diff *)
 model: inherit
-color: orange
+color: slate
 skills:
   - conventions
   - testing

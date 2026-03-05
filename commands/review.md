@@ -2,7 +2,6 @@
 description: Independent multi-agent code review. Reviews different aspects in parallel with specialized agents.
 allowed-tools: Bash(git *), Bash(gh *), Read, Grep, Glob, Agent
 argument-hint: "[PR-number | --staged | --branch | --commits=N]"
-disable-model-invocation: true
 ---
 
 # Review

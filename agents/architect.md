@@ -6,7 +6,7 @@ description: >
   APIs must be designed, or system boundaries defined. Read-only — designs but never implements.
 tools: Read, Grep, Glob, Bash(wc *), Bash(git log *), Bash(git diff *)
 model: inherit
-color: white
+color: gold
 skills:
   - conventions
   - quality-patterns

@@ -2,7 +2,6 @@
 description: Simplify existing code. Reduces complexity, improves readability, and removes unnecessary abstractions — without changing behavior.
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash, Agent
 argument-hint: "<file, function, or module to simplify>"
-disable-model-invocation: true
 ---
 
 # Simplify

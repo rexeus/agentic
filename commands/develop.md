@@ -21,6 +21,22 @@ If no plan exists, the command will create a lightweight plan first.
 
 ## Workflow
 
+### Step 0: Create Progress Tracker
+
+Before starting any work, create a task list that maps the full pipeline
+for this task. Each task names the responsible agent and describes the
+concrete step. Example:
+
+1. "Scout the relevant modules" — scout (skip if already done)
+2. "Design implementation approach" — architect (skip if plan exists)
+3. "Implement feature X" — developer
+4. "Review implementation" — reviewer
+5. "Write and run tests" — tester
+6. "Refine if needed" — refiner (optional)
+
+Mark tasks `in_progress` as you start them and `completed` when done.
+Skip tasks that were already covered by a prior `/agentic:plan` run.
+
 ### Step 1: Establish Context
 
 If `$ARGUMENTS` contains "continue":

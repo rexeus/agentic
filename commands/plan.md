@@ -27,15 +27,45 @@ asks the hard questions BEFORE the team starts building.
 Read `$ARGUMENTS` carefully. If no arguments were provided, ask the user
 what they want to build.
 
-Before doing anything else, **challenge the request**:
+This is the most critical step. A brilliant plan for the wrong problem is
+worthless. Your job is to be a **critical thinking partner** — not a
+yes-machine that immediately starts planning.
 
-- Is the problem clearly defined? If not, ask clarifying questions.
-- Are there hidden assumptions? Surface them explicitly.
-- Is the scope reasonable? If it's too broad, suggest breaking it down.
-- Does it conflict with existing functionality? Check the codebase.
+#### 1a: Clarify
 
-Do NOT proceed until the problem is well-defined. Ask questions.
-Present your understanding back to the user for confirmation.
+Ask questions until the problem is crystal clear:
+
+- **What exactly should change?** Get specific. "Improve performance" is not
+  a requirement — "Reduce API response time from 2s to 200ms" is.
+- **What's the success criteria?** How will we know it's done? What does
+  "done" look like?
+- **Who is this for?** End users? Other developers? An internal system?
+- **What's the context?** Why now? What triggered this? Is there urgency?
+- **What are the constraints?** Budget, time, tech stack, backwards compatibility?
+
+#### 1b: Challenge
+
+Play devil's advocate. Respectfully but firmly question the idea:
+
+- **Is this the right problem?** Or is it a symptom of a deeper issue?
+- **Do we actually need this?** What's the cost of NOT doing it?
+- **What could go wrong?** What are the risks, failure modes, unintended consequences?
+- **Is there a simpler way?** Could we achieve 80% of the value with 20% of the effort?
+- **What are we giving up?** Every feature has opportunity cost. What won't we build?
+- **Have we seen this pattern before?** Does the codebase already solve a similar
+  problem we can learn from?
+
+#### 1c: Confirm Understanding
+
+Restate the problem in your own words. Include:
+
+- The core problem being solved
+- The key constraints
+- What success looks like
+- Anything explicitly out of scope
+
+**Do NOT proceed until the user confirms your understanding.** If they
+correct you, update and confirm again. This loop can take multiple rounds.
 
 ### Step 2: Reconnaissance
 
@@ -116,5 +146,19 @@ Once the user approves an approach, produce a concrete plan:
 - <anything still unresolved>
 ```
 
-Present the plan for final approval. Once approved, the user can
-start implementation with `/agentic:develop`.
+Present the plan for final approval.
+
+### Step 6: Transition to Development
+
+Once the plan is approved, ask the user directly:
+
+> "Der Plan steht. Gibt es noch Rückfragen oder sollen wir direkt loslegen?"
+
+- If the user has questions — answer them, iterate on the plan.
+- If the user says go — **transition seamlessly into the develop pipeline.**
+  Do NOT wait for them to manually invoke `/agentic:develop`. You have the
+  plan, the context, and the scout findings. Proceed directly:
+  1. Create a progress tracking task list based on the implementation steps
+  2. Start with Step 4 of the develop workflow (Implement), since planning
+     and reconnaissance are already done
+  3. Continue through verification, iteration, and summary as normal

@@ -12,7 +12,15 @@
     "refactoring"
   ],
   "license": "Apache-2.0",
-  "author": "Dennis Wentzien",
+  "author": "Dennis Wentzien <dw@rexeus.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rexeus/agentic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rexeus/agentic/issues"
+  },
+  "homepage": "https://github.com/rexeus/agentic#readme",
   "scripts": {
     "format": "oxfmt"
   },

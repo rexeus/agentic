@@ -8,6 +8,7 @@ tools: Agent(scout, analyst, architect, developer, reviewer, tester, refiner), R
 model: inherit
 color: lavender
 skills:
+  - setup
   - conventions
   - quality-patterns
   - git-conventions

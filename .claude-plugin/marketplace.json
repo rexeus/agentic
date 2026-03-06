@@ -1,0 +1,32 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "rexeus",
+  "description": "Multi-agent development toolkit for Claude Code. Seven specialized agents, one orchestrator, zero complexity.",
+  "owner": {
+    "name": "Dennis Wentzien"
+  },
+  "plugins": [
+    {
+      "name": "agentic",
+      "source": ".",
+      "description": "Seven specialized agents, structured workflows, and quality guardrails. Install and start building — no configuration needed.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Dennis Wentzien"
+      },
+      "homepage": "https://github.com/rexeus/agentic",
+      "repository": "https://github.com/rexeus/agentic",
+      "license": "Apache-2.0",
+      "category": "development",
+      "keywords": [
+        "agentic-coding",
+        "multi-agent",
+        "code-review",
+        "code-quality",
+        "conventions",
+        "typescript",
+        "javascript"
+      ]
+    }
+  ]
+}

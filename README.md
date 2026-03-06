@@ -89,7 +89,7 @@ All commands are user-triggered only (`disable-model-invocation: true`).
 **PreToolUse** on `Bash` — runs `validate-commit-msg.sh` before every `git commit`:
 
 - Validates Conventional Commits format (type, scope, description)
-- Checks lowercase description, no trailing period, max 72 characters
+- Checks lowercase description, no trailing period, max 100 characters
 - Feeds validation errors back to Claude for self-correction (exit 2)
 
 **PostToolUse** on `Write|Edit` — runs `check-conventions.sh` after every file change:

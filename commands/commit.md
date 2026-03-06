@@ -73,7 +73,7 @@ git-conventions skill. The format:
 **Rules for the message:**
 
 - Description: imperative mood, lowercase, no period at the end
-- Max 72 characters for the first line
+- Max 100 characters for the first line
 - Body: explain WHAT changed and WHY, not HOW (the diff shows how)
 - If breaking change: add `!` after type/scope AND a `BREAKING CHANGE:` footer
 

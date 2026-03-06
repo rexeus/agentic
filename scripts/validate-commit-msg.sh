@@ -69,10 +69,10 @@ if [ -n "$DESC" ]; then
   fi
 fi
 
-# 5. First line max 72 characters
+# 5. First line max 100 characters
 LINE_LEN=${#FIRST_LINE}
-if [ "$LINE_LEN" -gt 72 ]; then
-  ISSUES="${ISSUES}First line exceeds 72 characters (found ${LINE_LEN})\n"
+if [ "$LINE_LEN" -gt 100 ]; then
+  ISSUES="${ISSUES}First line exceeds 100 characters (found ${LINE_LEN})\n"
 fi
 
 if [ -n "$ISSUES" ]; then

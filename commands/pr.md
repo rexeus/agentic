@@ -119,7 +119,7 @@ then read the most significant file changes.
 
 ### Step 5: Generate Title and Description
 
-**Title** — Conventional Commits format, max 72 characters:
+**Title** — Conventional Commits format, max 100 characters:
 
 ```
 <type>[optional scope][optional !]: <description>

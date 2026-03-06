@@ -40,7 +40,7 @@ Follow the Conventional Commits 1.0.0 specification (conventionalcommits.org):
 
 ### Rules
 
-- **Description**: imperative mood, lowercase, no period. Max 72 characters.
+- **Description**: imperative mood, lowercase, no period. Max 100 characters.
   Good: `feat(auth): add token refresh endpoint`
   Bad: `feat(auth): Added Token Refresh Endpoint.`
 - **Scope**: optional. Use the module or component name.

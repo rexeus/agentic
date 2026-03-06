@@ -93,6 +93,43 @@ and you always keep the human in the loop.
 
    **Developer:** Implementation plan, Scout report, Scope boundary, Test command (optional)
 
+   **⚠️ Developer briefings require special attention.** The developer does
+   NOT plan — it executes. If your briefing is vague, the developer will
+   compensate by planning instead of coding. This is the #1 cause of
+   unproductive developer deployments.
+
+   The developer briefing must include the **full architect plan** — not a
+   summary. Pass through the architect's output: files to create/modify,
+   interfaces, implementation order, edge cases. If no architect was
+   involved, YOU must provide this level of detail yourself.
+
+   **Bad developer briefing:**
+   > Implementation plan: Add caching to the user profile endpoint.
+   > Scout report: Express app, Redis available.
+
+   **Good developer briefing:**
+   > **Implementation plan:**
+   > 1. Create `src/cache/profileCache.ts` — exports `getOrSet(key, ttlMs, fetchFn)`
+   >    wrapping the existing Redis client from `src/db/redis.ts`
+   > 2. Modify `src/api/routes/users.ts` — in `GET /api/users/:id` handler (line 18),
+   >    wrap the `userRepo.findById()` call with `profileCache.getOrSet()`
+   > 3. Modify `src/api/routes/users.ts` — in `PUT /api/users/:id` handler (line 45),
+   >    call `profileCache.invalidate(userId)` after successful update
+   >
+   > **Interfaces:**
+   > - `getOrSet<T>(key: string, ttlMs: number, fetch: () => Promise<T>): Promise<T>`
+   > - `invalidate(key: string): Promise<void>`
+   >
+   > **Edge cases:** Cache miss returns fresh data. Redis down = skip cache, hit DB directly.
+   > TTL: 5 minutes.
+   >
+   > **Scout report:** Express app, Redis client in `src/db/redis.ts`, user routes
+   > in `src/api/routes/users.ts`, tests in `src/api/__tests__/users.test.ts`.
+   > Naming: camelCase, barrel exports, errors extend `AppError`.
+   >
+   > **Scope:** Profile caching only. Do not touch auth or other endpoints.
+   > **Test command:** `npm test`
+
    **Reviewer:** Scope (files/commits), Diff baseline, Context (dev summary), Plan (optional), Focus areas (optional)
 
    **Tester:** Files changed, Test command, Test framework, Mode ("write" or "assess"), Dev notes (optional), Plan (optional)

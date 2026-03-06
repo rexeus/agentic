@@ -78,11 +78,22 @@ Skip this step if `/agentic:plan` already produced an approved design.
 
 ### Step 4: Implement
 
-Deploy **developer** with:
+Deploy **developer** with a briefing concrete enough that the developer
+can start coding immediately — no interpretation, no planning needed.
 
-- The architecture plan (from step 3 or from `/agentic:plan`)
-- The scout/analyst findings (from step 2)
-- Clear scope boundaries
+**Required in every developer briefing:**
+
+1. **Implementation plan** — Pass through the architect's full plan, not a
+   summary. Must include: files to create/modify, interfaces/signatures,
+   implementation order, and edge cases to handle.
+2. **Scout report** — Codebase patterns, naming conventions, file structure.
+3. **Scope boundary** — What is in scope, what is explicitly out.
+4. **Test command** — How to run the test suite.
+
+**Rule of thumb:** If you can read your briefing and immediately know which
+file to open and what to type, it's concrete enough. If you'd need to
+"figure out the approach first" — it's too vague and the developer will
+plan instead of code.
 
 The developer implements incrementally. After each logical unit:
 

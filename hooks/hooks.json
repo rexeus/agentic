@@ -3,6 +3,17 @@
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "EnterPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'EnterPlanMode is disabled. Agents manage planning through conversation, not native plan mode. If you are the developer agent, write code immediately — do not plan.' >&2 && exit 2",
+            "timeout": 5,
+            "statusMessage": "Blocking native plan mode..."
+          }
+        ]
+      },
+      {
         "matcher": "Bash",
         "hooks": [
           {

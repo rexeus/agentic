@@ -10,8 +10,10 @@ coding session.
 - **Planning a feature?** `/agentic:plan` — challenges assumptions, presents options, produces a plan.
 - **Building something?** `/agentic:develop` — full pipeline: understand, design, build, verify.
 - **Code ready for review?** `/agentic:review` — parallel multi-agent review with confidence scoring.
+- **Changes ready to ship?** `/agentic:verify` — parallel quality gate: correctness, tests, and complexity.
 - **Code too complex?** `/agentic:simplify` — distill working code to its essence.
 - **Ready to commit?** `/agentic:commit` — Conventional Commits from staged changes.
+- **Ready for a PR?** `/agentic:pr` — create or update a Pull Request with a crafted description.
 
 ## The Agents
 

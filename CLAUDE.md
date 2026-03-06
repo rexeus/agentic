@@ -9,8 +9,8 @@ coding session.
 - **Unfamiliar codebase?** The lead deploys the scout first. Always.
 - **Planning a feature?** `/agentic:plan` — challenges assumptions, presents options, produces a plan.
 - **Building something?** `/agentic:develop` — full pipeline: understand, design, build, verify.
-- **Code ready for review?** `/agentic:review` — parallel multi-agent review with confidence scoring.
-- **Changes ready to ship?** `/agentic:verify` — parallel quality gate: correctness, tests, and complexity.
+- **Code ready for review?** `/agentic:review` — focused code review on a PR, branch, or staged changes. Finds bugs, security issues, convention violations.
+- **Changes ready to ship?** `/agentic:verify` — pre-ship quality gate. Runs correctness review, complexity analysis, AND tests in parallel. Broader than review.
 - **Code too complex?** `/agentic:simplify` — distill working code to its essence.
 - **Ready to commit?** `/agentic:commit` — Conventional Commits from staged changes.
 - **Ready for a PR?** `/agentic:pr` — create or update a Pull Request with a crafted description.

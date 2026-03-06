@@ -9,6 +9,11 @@ argument-hint: "[PR-number | --staged | --branch | --commits=N]"
 Run an independent, multi-agent code review. Different agents examine different
 aspects of the code in parallel for thorough, unbiased analysis.
 
+**When to use this vs `/agentic:verify`:**
+Use **review** when you want a focused code review — finding bugs, security
+issues, and convention violations. Use **verify** when you want a full pre-ship
+quality gate that also runs tests and checks for simplification opportunities.
+
 **Usage:**
 
 - `/agentic:review` — will ask what to review

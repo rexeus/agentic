@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 # check-conventions.sh
-# PostToolUse hook for Write|Edit — checks written files for convention issues.
-# Exit 1 blocks the action (hard violations). Exit 2 feeds back to Claude (soft violations).
+# PostToolUse hook for Write|Edit — informational convention feedback.
+# Secrets are blocked by block-secrets.sh (PreToolUse) before the write happens.
+# This script runs AFTER the write and provides soft warnings via stdout + exit 0.
 
 set -euo pipefail
 
-# Require jq for JSON parsing
 if ! command -v jq &>/dev/null; then
-  echo "Warning: jq not found — convention checks skipped" >&2
   exit 0
 fi
 
@@ -26,26 +25,34 @@ case "$FILE_PATH" in
     ;;
 esac
 
-BLOCKERS=""
-
-# --- BLOCKERS (exit 1) — never acceptable, hard stop ---
-
-# Merge conflict markers
+# Merge conflict markers — should not be in any written file
 if grep -qE '^(<<<<<<<|=======|>>>>>>>)' "$FILE_PATH" 2>/dev/null; then
-  BLOCKERS="${BLOCKERS}Merge conflict markers in ${FILE_PATH}\n"
+  echo "Merge conflict markers found in ${FILE_PATH} — resolve before committing"
 fi
 
-# Hardcoded secrets patterns (POSIX-portable regex — no \s or \x27)
-if grep -qEi '(password|passwd|secret|api_?key|access_?key|private_?key)[[:space:]]*[:=][[:space:]]*["'"'"'][^[:space:]"'"'"']{4,}' "$FILE_PATH" 2>/dev/null; then
-  BLOCKERS="${BLOCKERS}Possible hardcoded secret in ${FILE_PATH}\n"
-fi
-if grep -qE '(sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36,}|gho_[a-zA-Z0-9]{36,}|aws_[a-zA-Z0-9/+=]{20,})' "$FILE_PATH" 2>/dev/null; then
-  BLOCKERS="${BLOCKERS}Possible API token (OpenAI/GitHub/AWS pattern) in ${FILE_PATH}\n"
-fi
+WARNINGS=""
 
-if [ -n "$BLOCKERS" ]; then
-  printf "%b" "$BLOCKERS" >&2
-  exit 1
+# Debug statements in JS/TS files
+case "$FILE_PATH" in
+  *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs)
+    if grep -qn 'console\.log\|console\.debug\|console\.warn\|debugger' "$FILE_PATH" 2>/dev/null; then
+      WARNINGS="${WARNINGS}Debug statement found in ${FILE_PATH} — remove before committing\n"
+    fi
+    ;;
+esac
+
+# TODOs without owner or issue link (source files only)
+case "$FILE_PATH" in
+  *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs)
+    if grep -qnE 'TODO[^(]|TODO$' "$FILE_PATH" 2>/dev/null; then
+      WARNINGS="${WARNINGS}Unowned TODO in ${FILE_PATH} — use TODO(name) or TODO(#123)\n"
+    fi
+    ;;
+esac
+
+if [ -n "$WARNINGS" ]; then
+  printf "%b" "$WARNINGS"
+  exit 0
 fi
 
 exit 0

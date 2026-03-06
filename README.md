@@ -47,7 +47,7 @@ Lead        → orchestrates all of the above (coordinate)
 | ------------- | ------- | ---------- | ----------------------------------------------------------------------------------------------------- |
 | **lead**      | inherit | Coordinate | Analyzes tasks, delegates to specialists, synthesizes results                                         |
 | **scout**     | haiku   | Explore    | Fast codebase reconnaissance. Maps structure, finds patterns. Read-only                               |
-| **analyst**   | sonnet  | Understand | Traces logic, follows data flows, explains mechanics. Read-only                                       |
+| **analyst**   | inherit | Understand | Traces logic, follows data flows, explains mechanics. Read-only                                       |
 | **architect** | inherit | Design     | Designs solutions, evaluates trade-offs, produces implementation plans. Read-only                     |
 | **developer** | inherit | Build      | Implements features and refactors code. The only agent that writes source code                        |
 | **reviewer**  | inherit | Verify     | Reviews for correctness, security, conventions, quality. Confidence scoring (threshold 80). Read-only |
@@ -78,7 +78,9 @@ Agents preload specific skills via frontmatter.
 | `/agentic:plan <task>`       | Critically question requirements, present options, produce an implementation plan    |
 | `/agentic:develop <task>`    | Full pipeline: scout → analyst → architect → developer → reviewer + tester           |
 | `/agentic:review [target]`   | Multi-agent parallel review. Asks what to review if scope is unclear                 |
+| `/agentic:verify`            | Pre-ship quality gate: correctness review + complexity analysis + tests in parallel  |
 | `/agentic:simplify [target]` | Distill code to its essence. Analyst → Refiner → Tester pipeline                     |
+| `/agentic:pr`                | Create or update a Pull Request with crafted title and description via `gh` CLI      |
 
 All commands are user-triggered only (`disable-model-invocation: true`).
 
@@ -96,8 +98,8 @@ All commands are user-triggered only (`disable-model-invocation: true`).
 
 - Merge conflict markers (blocks)
 - Hardcoded secrets patterns (blocks)
-- Debug statements in JS/TS (warns)
-- TODOs without owner or issue link (warns)
+- Debug statements in JS/TS — console.log, console.debug, debugger (warns)
+- TODOs without owner or issue link in JS/TS — use TODO(name) or TODO(#123) (warns)
 
 ### Agent-level (frontmatter)
 

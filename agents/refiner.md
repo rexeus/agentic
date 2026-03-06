@@ -5,7 +5,7 @@ description: >
   Use after implementation is complete and tests pass. Reduces complexity,
   improves readability, and removes unnecessary abstractions — without
   changing behavior. The code sculptor.
-tools: Read, Write, Edit, Grep, Glob, Bash(git diff *), Bash(git status *), Bash(git checkout *), Bash(git restore *), Bash(git stash *), Bash(npm test *), Bash(npm run test*), Bash(npx *), Bash(pnpm *), Bash(yarn *), Bash(node *)
+tools: Read, Write, Edit, Grep, Glob, Bash(git diff *), Bash(git status *), Bash(git checkout *), Bash(git restore *), Bash(npm test *), Bash(npm run test*), Bash(npx *), Bash(pnpm *), Bash(yarn *), Bash(node *)
 model: inherit
 color: cyan
 skills:

@@ -74,8 +74,7 @@ or `develop`). For the default branch, proceed unless the user intervenes.
 
 If the branch has no upstream tracking:
 
-> "Branch `feature/token-refresh` ist noch nicht gepusht. Ich pushe ihn jetzt
-> nach origin."
+> "Branch `feature/token-refresh` has no upstream. Pushing to origin now."
 
 Then push:
 
@@ -213,6 +212,6 @@ Report the result with the PR URL.
 
 After creating or updating, suggest next steps if relevant:
 
-- "PR erstellt: <url>"
-- If draft: "Draft-PR erstellt. Wenn er review-ready ist: `gh pr ready`"
+- "PR created: <url>"
+- If draft: "Draft PR created. When ready for review: `gh pr ready`"
 - If the reviewer/tester pipeline hasn't run: suggest `/agentic:review`

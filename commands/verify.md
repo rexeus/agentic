@@ -1,13 +1,18 @@
 ---
 description: Run a multi-agent quality gate on current changes. Checks correctness, complexity, and tests in parallel.
-allowed-tools: Read, Grep, Glob, Bash(git *), Bash(npm *), Bash(npx *), Bash(pnpm *), Bash(yarn *), Agent
+allowed-tools: Read, Grep, Glob, Bash(git *), Bash(gh *), Bash(npm *), Bash(npx *), Bash(pnpm *), Bash(yarn *), Agent
 argument-hint: "[--base <branch>] [--staged]"
 ---
 
 # Verify
 
-Quality gate. Deploys three parallel agents to answer one question:
+Pre-ship quality gate. Deploys three parallel agents to answer one question:
 **are these changes ready to ship?**
+
+**When to use this vs `/agentic:review`:**
+Use **verify** as the final check before committing or creating a PR — it runs
+correctness review, complexity analysis, AND tests together. Use **review** for
+a focused code review without running tests or checking complexity.
 
 **Usage:**
 
@@ -179,10 +184,9 @@ When all three agents return:
 
 Based on the verdict:
 
-- **PASS** → "Alles grün. Weiter mit `/agentic:commit` oder `/agentic:pr`."
-- **FAIL** → "Diese Findings müssen gefixt werden. Soll ich den Developer
-  darauf ansetzen?" (If yes, transition to developer with specific findings.)
-- **CONDITIONAL** → "Es gibt Warnings aber keine Blocker. Jetzt fixen oder
-  so shippen?"
-- **Simplification findings** → "Es gibt Vereinfachungspotenzial.
-  `/agentic:simplify` kann das übernehmen."
+- **PASS** → "All green. Ready for `/agentic:commit` or `/agentic:pr`."
+- **FAIL** → "These findings need fixing. Should I send the developer to
+  address them?" (If yes, transition to developer with specific findings.)
+- **CONDITIONAL** → "Warnings but no blockers. Fix now or ship as-is?"
+- **Simplification findings** → "Simplification opportunities detected.
+  `/agentic:simplify` can handle these."

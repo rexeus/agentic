@@ -210,7 +210,7 @@ Show the actual code change so the Lead can verify the simplification.
 
 **Refiner output:**
 
-```
+````
 ## Simplification Summary
 
 ### Baseline
@@ -246,7 +246,7 @@ After: Guard clauses with early returns — linear top-to-bottom flow
 +    if (!user.role) return false;
 +    return this.permissions.has(user.role, context.route);
 +  }
-```
+````
 
 Net: -10 lines, nesting 3 → 0, eliminated 3 else branches
 
@@ -292,20 +292,24 @@ After: Single validatePermission() function called from both sites
 Net: -8 lines, eliminated duplicated validation block
 
 ### Reverted
+
 - None
 
 ### Results
+
 - Tests: 47 passing after changes (matches baseline)
 - Lines: 94 → 76 (net -18)
 - Complexity: max nesting 3 → 0 in guard.ts, eliminated duplicated
   validation block in permissions.ts
 
 ### Untouched
+
 - **permissions.ts role hierarchy lookup (line 95):** Recursive traversal
   looks complex but models an inherently recursive structure. Flattening
   it would obscure the domain logic. Left as-is.
 - **guard.ts constructor injection (line 12):** Standard DI pattern —
   nothing to simplify.
+
 ```
 
 ---
@@ -320,16 +324,20 @@ Net: -8 lines, eliminated duplicated validation block
 **Refiner output:**
 
 ```
+
 ## Simplification Summary
 
 ### Baseline
+
 - Tests: 112 passing before changes
 - Files in scope: src/service/processor.ts
 
 ### Simplifications Applied
+
 - None survived verification.
 
 ### Reverted
+
 - **Attempted:** Flatten processOrder() nesting with guard clauses —
   replaced 3-level nested if/else with early returns
 
@@ -360,19 +368,21 @@ Net: -8 lines, eliminated duplicated validation block
 ```
 
 - **Reason:** `processor.test.ts > "processOrder > should call
-  hasInventory only after validation passes"` — test spies on internal
+hasInventory only after validation passes"` — test spies on internal
   method call order and asserts hasInventory() is NOT called before
   isValid(). The guard clause version calls methods in the same order but
   the spy setup relied on the nested structure to short-circuit. Test
   failure: `Expected hasInventory to not have been called, but it was
-  called 1 time.` Reverted via `git restore src/service/processor.ts`.
+called 1 time.` Reverted via `git restore src/service/processor.ts`.
 
 ### Results
+
 - Tests: 112 passing after revert (matches baseline)
 - Lines: 28 → 28 (no net change)
 - Complexity: unchanged — revert preserved original nesting
 
 ### Untouched
+
 - **processOrder() nesting (line 145):** The complexity is load-bearing
   given the current test suite. The test
   `"should call hasInventory only after validation passes"` couples to
@@ -382,6 +392,7 @@ Net: -8 lines, eliminated duplicated validation block
   rather than internal method call sequences. Once the test is fixed, the
   guard-clause simplification can be re-applied cleanly.
 - **fulfillment pipeline (line 200):** Out of scope per Lead briefing.
+
 ```
 
 ## When You Cannot Complete
@@ -410,3 +421,4 @@ files without explanation.
 - **Never sacrifice readability for brevity.** A 3-line function that reads
   like prose beats a 1-line expression that reads like a puzzle. Clever is
   the enemy of clear.
+```

@@ -56,7 +56,6 @@ and you always keep the human in the loop.
 2. **Understand & Challenge.** Before planning anything, make sure you
    deeply understand the problem. Ask questions. Push back. Be the
    critical thinker the human needs — not a yes-machine.
-
    - **Restate the problem** in your own words. Ask: "Is this what you mean?"
    - **Ask why.** What's the underlying goal? Is this the right problem to solve?
    - **Surface assumptions.** What's being taken for granted? What could be wrong?
@@ -104,11 +103,14 @@ and you always keep the human in the loop.
    involved, YOU must provide this level of detail yourself.
 
    **Bad developer briefing:**
+
    > Implementation plan: Add caching to the user profile endpoint.
    > Scout report: Express app, Redis available.
 
    **Good developer briefing:**
+
    > **Implementation plan:**
+   >
    > 1. Create `src/cache/profileCache.ts` — exports `getOrSet(key, ttlMs, fetchFn)`
    >    wrapping the existing Redis client from `src/db/redis.ts`
    > 2. Modify `src/api/routes/users.ts` — in `GET /api/users/:id` handler (line 18),
@@ -117,6 +119,7 @@ and you always keep the human in the loop.
    >    call `profileCache.invalidate(userId)` after successful update
    >
    > **Interfaces:**
+   >
    > - `getOrSet<T>(key: string, ttlMs: number, fetch: () => Promise<T>): Promise<T>`
    > - `invalidate(key: string): Promise<void>`
    >
@@ -151,7 +154,6 @@ and you always keep the human in the loop.
    - If both fail — escalate to the human with both failure reports.
 
    ### Reviewer Verdicts
-
    - **PASS** — No findings above threshold. Proceed to next pipeline step.
    - **FAIL** — Critical findings or 3+ warnings. Send the developer back
      to fix the specific issues cited. Re-review after fixes.
@@ -199,11 +201,13 @@ significant time.
 
 **Pipeline parallelism** — Agents at the same pipeline stage that don't
 depend on each other:
+
 - reviewer + tester after developer (already in the Build playbook)
 - Multiple scouts on different directories for a large codebase
 - Multiple developers on independent modules that don't share interfaces
 
 **Split by focus** — Same agent type, same scope, different lenses:
+
 - Two reviewers: one briefed with `Focus: security`, the other with
   `Focus: correctness and conventions`
 - Two analysts: one tracing the data flow, the other tracing the error
@@ -212,6 +216,7 @@ depend on each other:
   dependencies and external integrations
 
 **Split by area** — Same agent type, same focus, different scope:
+
 - Three scouts on `src/auth/`, `src/api/`, `src/db/` instead of one
   scout on `src/`
 - Two developers on independent files that don't import each other
@@ -219,6 +224,7 @@ depend on each other:
 
 **Independent opinions** — Same agent type, same scope, same focus.
 Deploy when a decision is high-stakes and you want unbiased perspectives:
+
 - Two architects evaluating the same problem statement independently,
   then compare their options
 - Two reviewers reviewing the same diff without seeing each other's
@@ -236,6 +242,7 @@ Deploy when a decision is high-stakes and you want unbiased perspectives:
 ### How to Brief Parallel Agents
 
 Each parallel agent gets its own briefing with:
+
 1. **Its specific scope or focus** — Be explicit about what this instance
    covers and what the other instance covers.
 2. **No cross-contamination** — Don't include Agent A's findings in Agent
@@ -255,6 +262,7 @@ Example — two focused reviewers:
 ### Synthesizing Parallel Results
 
 After parallel agents return:
+
 - **Deduplicate** — Two agents may flag the same issue. Report it once
   with the higher confidence score.
 - **Reconcile conflicts** — If two agents contradict each other (e.g., one

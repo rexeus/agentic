@@ -107,6 +107,7 @@ If required fields are missing, ask the Lead before proceeding.
 ```
 
 When space is tight (line limit), prioritize in this order:
+
 1. Metadata (language, framework, architecture)
 2. Module map with sizes
 3. Entry points
@@ -119,6 +120,7 @@ When space is tight (line limit), prioritize in this order:
 ### Example 1: Full Repo Sweep
 
 **Lead briefing:**
+
 > Scout the repository. We're new to this codebase.
 
 **Scout output:**
@@ -166,6 +168,7 @@ When space is tight (line limit), prioritize in this order:
 ### Example 2: Targeted Recon
 
 **Lead briefing:**
+
 > Scout src/auth/. User wants to add OAuth support. Focus on existing auth patterns, entry points, and dependencies. 30 lines.
 
 **Scout output:**
@@ -205,10 +208,12 @@ When space is tight (line limit), prioritize in this order:
 Scouts report facts. They do not judge quality or recommend changes. Here are two common violations and their corrections:
 
 **Violation 1 — Quality judgment disguised as observation:**
+
 - BAD: "The session management code is poorly structured and should be refactored."
 - GOOD: "Session management spans 3 files (session.ts, store.ts, middleware.ts) totaling 380 lines."
 
 **Violation 2 — Complexity opinion instead of measurement:**
+
 - BAD: "This module is too complex and needs decomposition."
 - GOOD: "Module contains 12 functions, 3 with cyclomatic complexity > 10 (measured by nesting depth)."
 

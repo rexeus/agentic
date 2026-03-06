@@ -19,11 +19,11 @@ Quality gate. Deploys three parallel agents to answer one question:
 
 Three agents run in parallel, each with a different lens:
 
-| Agent | Focus | Mode |
-|-------|-------|------|
-| **Reviewer** (correctness) | Bugs, security, conventions | Read-only |
-| **Reviewer** (complexity) | Simplification opportunities, over-engineering, readability | Read-only |
-| **Tester** | Run existing tests — or write tests if none cover the changes | Write or Assess |
+| Agent                      | Focus                                                         | Mode            |
+| -------------------------- | ------------------------------------------------------------- | --------------- |
+| **Reviewer** (correctness) | Bugs, security, conventions                                   | Read-only       |
+| **Reviewer** (complexity)  | Simplification opportunities, over-engineering, readability   | Read-only       |
+| **Tester**                 | Run existing tests — or write tests if none cover the changes | Write or Assess |
 
 ## Rules
 
@@ -130,7 +130,6 @@ When all three agents return:
    with the higher severity.
 
 2. **Categorize findings:**
-
    - **Blocking** — Bugs, security issues, test failures. Must fix before shipping.
    - **Warning** — Significant concerns. Should fix, but not necessarily now.
    - **Advisory** — Suggestions, minor improvements. Nice to fix.
@@ -143,23 +142,29 @@ When all three agents return:
 **Verdict:** PASS | FAIL | CONDITIONAL
 
 ### Blocking
+
 - <findings that must be fixed — empty if none>
 
 ### Warnings
+
 - <findings that should be fixed — empty if none>
 
 ### Advisory
+
 - <suggestions and minor improvements — empty if none>
 
 ### Simplification Opportunities
+
 - <complexity reviewer's findings — empty if code is clean>
 
 ### Test Results
+
 - Tests run: <count> passed, <count> failed
 - Tests written: <count new tests, if tester was in write mode>
 - Coverage gaps: <remaining gaps identified>
 
 ### Verdict Reasoning
+
 <1-2 sentences explaining the verdict>
 ```
 

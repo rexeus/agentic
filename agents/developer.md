@@ -202,6 +202,7 @@ When you finish, provide:
 **Lead briefing:**
 
 > **Implementation plan:**
+>
 > 1. Create `src/api/middleware/rateLimiter.ts` — exports
 >    `createRateLimiter(options: { windowMs: number; maxAttempts: number }): RequestHandler`
 > 2. Modify `src/api/routes/login.ts` — apply rateLimiter middleware

@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'EnterPlanMode is disabled. Agents manage planning through conversation, not native plan mode. If you are the developer agent, write code immediately — do not plan.' >&2 && exit 2",
+            "command": "echo 'Use /agentic:plan instead of native plan mode. The plugin manages planning through structured conversation with the architect agent.' >&2 && exit 2",
             "timeout": 5,
             "statusMessage": "Blocking native plan mode..."
           }

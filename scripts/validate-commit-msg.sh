@@ -39,6 +39,20 @@ if [ -z "$MSG" ]; then
   exit 0
 fi
 
+# Project-awareness: check if this project actually uses Conventional Commits.
+# If fewer than half of the last 10 commits follow the convention, skip validation.
+if command -v git &>/dev/null && git rev-parse --is-inside-work-tree &>/dev/null 2>&1; then
+  TYPES_PATTERN="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)"
+  RECENT=$(git log --oneline -10 --format='%s' 2>/dev/null || echo "")
+  if [ -n "$RECENT" ]; then
+    TOTAL=$(printf '%s\n' "$RECENT" | wc -l | tr -d ' ')
+    MATCHING=$(printf '%s\n' "$RECENT" | grep -cE "$TYPES_PATTERN" || true)
+    if [ "$TOTAL" -ge 4 ] && [ "$MATCHING" -lt $((TOTAL / 2)) ]; then
+      exit 0
+    fi
+  fi
+fi
+
 # Extract just the first line for header validation
 FIRST_LINE=$(printf '%s\n' "$MSG" | head -1)
 ISSUES=""

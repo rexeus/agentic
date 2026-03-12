@@ -102,10 +102,11 @@ The Lead runs as your main thread (configured in `settings.json`). When you
 describe a task, the Lead decides which specialists to deploy, in what order,
 and with what briefing. You see the plan before it executes.
 
-Every agent has a **Stop hook** — an LLM-based guardrail that verifies the agent
-stayed in its role before returning results. The Developer can't plan. The
-Reviewer can't implement. The Architect can't write tests. Each agent does one
-thing well.
+Every agent has a **Stop hook** — an LLM-based guardrail that checks whether the
+agent stayed in its role before returning results. The Developer is checked
+against planning. The Reviewer against implementing. The Architect against
+writing tests. These are probabilistic guardrails, not hard walls — but they
+catch most role drift.
 
 ## Skills
 
@@ -125,11 +126,14 @@ decisions without cluttering your workflow.
 
 The plugin enforces quality through automated hooks at two levels:
 
-**Before writing** (PreToolUse) — blocks the action if violated:
+**Before writing** (PreToolUse) — blocks the action when a violation is detected:
 
-- Secret detection — hardcoded passwords, secrets, API keys (OpenAI, GitHub, AWS, Stripe, Slack patterns)
-- Commit message validation — Conventional Commits format, lowercase, no trailing period, max 100 chars
+- Secret detection — hardcoded passwords, secrets, API keys (OpenAI, GitHub, AWS, Stripe, Slack patterns). Requires `jq` for JSON parsing; falls back to skipping if unavailable.
+- Commit message validation — Conventional Commits format, lowercase, no trailing period, max 100 chars. Auto-skips if the project's recent history doesn't use Conventional Commits.
 - Plan mode blocking — agents manage planning through conversation, not native plan mode
+
+These hooks use pattern matching and are deterministic — but regex-based
+detection has limits. They catch common cases, not every possible encoding.
 
 **After writing** (PostToolUse) — informational warnings, never blocking:
 
@@ -138,7 +142,8 @@ The plugin enforces quality through automated hooks at two levels:
 - Merge conflict markers
 
 **Agent-level** — every agent carries a prompt-based Stop hook that evaluates
-role compliance before returning results.
+role compliance before returning results. These are LLM-based and probabilistic —
+effective but not infallible.
 
 ## License
 

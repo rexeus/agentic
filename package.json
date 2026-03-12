@@ -22,6 +22,7 @@
     "url": "git+https://github.com/rexeus/agentic.git"
   },
   "scripts": {
+    "test": "bash tests/run.sh",
     "format": "oxfmt"
   },
   "devDependencies": {

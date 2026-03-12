@@ -25,9 +25,13 @@ fi
 
 BLOCKERS=""
 
-# Hardcoded secrets (key=value with quoted or unquoted string)
-# Handles: password = "val", "password": "val", PASSWORD=val
-if printf '%s\n' "$CONTENT" | grep -qEi '(password|passwd|secret|api_?key|access_?key|private_?key)"?[[:space:]]*[:=][[:space:]]*"?'"'"'?[^[:space:]"'"'"',;}{]{4,}'; then
+# Hardcoded secrets — two patterns:
+# 1. Quoted values after : or = (catches JSON, YAML, JS with quotes)
+# 2. Unquoted values after = only (catches .env without quotes)
+# This avoids false positives on type annotations like "password: string"
+if printf '%s\n' "$CONTENT" | grep -qEi '(password|passwd|secret|api_?key|access_?key|private_?key)"?[[:space:]]*[:=][[:space:]]*["'"'"'][^[:space:]"'"'"']{4,}'; then
+  BLOCKERS="${BLOCKERS}Possible hardcoded secret detected — do not write credentials to ${FILE_PATH:-file}\n"
+elif printf '%s\n' "$CONTENT" | grep -qEi '(password|passwd|secret|api_?key|access_?key|private_?key)[[:space:]]*=[[:space:]]*[^[:space:]"'"'"'=,;}{]{4,}'; then
   BLOCKERS="${BLOCKERS}Possible hardcoded secret detected — do not write credentials to ${FILE_PATH:-file}\n"
 fi
 

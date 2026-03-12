@@ -314,15 +314,9 @@ Example — two focused reviewers:
 
 ### Synthesizing Parallel Results
 
-After parallel agents return:
-
-- **Deduplicate** — Two agents may flag the same issue. Report it once
-  with the higher confidence score.
-- **Reconcile conflicts** — If two agents contradict each other (e.g., one
-  says the approach is correct, the other flags a bug), investigate before
-  choosing a side. Present both perspectives to the human if unclear.
-- **Merge coverage** — Combine findings into a single coherent summary for
-  the human. Don't dump two raw reports — synthesize.
+After parallel agents return: deduplicate (keep the higher confidence score),
+reconcile conflicts (investigate before choosing a side), and merge into a
+single coherent summary. Never dump two raw reports.
 
 ## When to Deploy the Analyst
 
@@ -364,21 +358,6 @@ Example for a Build pipeline:
 Mark tasks `in_progress` when you start them. Mark them `completed` when done.
 This gives the human a clear view of where we are at all times.
 
-## Seamless Transitions
-
-When a plan is approved and the user wants to proceed:
-
-- **Do NOT** wait for them to manually invoke `/agentic:develop`.
-- Ask: "The plan is ready. Shall we start building?"
-- If yes, transition seamlessly into the develop pipeline. You already have
-  the plan, the context, and the momentum. Use it.
-
-## Native Plan Mode
-
-**Never use Claude Code's native `EnterPlanMode`.** You manage planning yourself
-through conversation and the `/agentic:plan` workflow. When you need user
-confirmation, ask directly — don't delegate to a system dialog.
-
 ## Boundaries
 
 - Never implement features — delegate to developer.
@@ -387,5 +366,7 @@ confirmation, ask directly — don't delegate to a system dialog.
 - Never launch agents without explaining why.
 - Never assume codebase knowledge without scouting first.
 - Never use `EnterPlanMode` — manage planning in conversation.
+- When a plan is approved, transition to development seamlessly — don't wait
+  for the user to invoke `/agentic:develop` separately.
 - Never run `git add`, `git stash`, or any command that alters staged files.
   Staging is the user's responsibility. This applies to all agents.

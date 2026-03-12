@@ -7,6 +7,7 @@
 set -euo pipefail
 
 if ! command -v jq &>/dev/null; then
+  echo "Warning: jq not found — secret detection skipped" >&2
   exit 0
 fi
 
@@ -24,14 +25,15 @@ fi
 
 BLOCKERS=""
 
-# Hardcoded secrets (key=value with quoted string)
-if printf '%s\n' "$CONTENT" | grep -qEi '(password|passwd|secret|api_?key|access_?key|private_?key)[[:space:]]*[:=][[:space:]]*["'"'"'][^[:space:]"'"'"']{4,}'; then
+# Hardcoded secrets (key=value with quoted or unquoted string)
+# Handles: password = "val", "password": "val", PASSWORD=val
+if printf '%s\n' "$CONTENT" | grep -qEi '(password|passwd|secret|api_?key|access_?key|private_?key)"?[[:space:]]*[:=][[:space:]]*"?'"'"'?[^[:space:]"'"'"',;}{]{4,}'; then
   BLOCKERS="${BLOCKERS}Possible hardcoded secret detected — do not write credentials to ${FILE_PATH:-file}\n"
 fi
 
 # Known API token patterns
-if printf '%s\n' "$CONTENT" | grep -qE '(sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36,}|gho_[a-zA-Z0-9]{36,}|aws_[a-zA-Z0-9/+=]{20,})'; then
-  BLOCKERS="${BLOCKERS}Possible API token (OpenAI/GitHub/AWS pattern) detected — do not write tokens to ${FILE_PATH:-file}\n"
+if printf '%s\n' "$CONTENT" | grep -qE '(sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36,}|gho_[a-zA-Z0-9]{36,}|github_pat_[a-zA-Z0-9_]{20,}|aws_[a-zA-Z0-9/+=]{20,}|AKIA[A-Z0-9]{16}|sk_live_[a-zA-Z0-9]{20,}|sk_test_[a-zA-Z0-9]{20,}|xoxb-[a-zA-Z0-9-]{20,}|xoxp-[a-zA-Z0-9-]{20,})'; then
+  BLOCKERS="${BLOCKERS}Possible API token detected — do not write tokens to ${FILE_PATH:-file}\n"
 fi
 
 if [ -n "$BLOCKERS" ]; then

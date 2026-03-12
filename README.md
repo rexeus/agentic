@@ -127,13 +127,13 @@ The plugin enforces quality through automated hooks at two levels:
 
 **Before writing** (PreToolUse) — blocks the action if violated:
 
-- Secret detection — hardcoded passwords, secrets, API keys, access keys (OpenAI, GitHub, AWS patterns)
+- Secret detection — hardcoded passwords, secrets, API keys (OpenAI, GitHub, AWS, Stripe, Slack patterns)
 - Commit message validation — Conventional Commits format, lowercase, no trailing period, max 100 chars
 - Plan mode blocking — agents manage planning through conversation, not native plan mode
 
 **After writing** (PostToolUse) — informational warnings, never blocking:
 
-- Debug statements in JS/TS (console.log, console.debug, console.warn, debugger)
+- Debug statements in JS/TS (console.log, console.debug, debugger)
 - Unowned TODOs — use `TODO(name)` or `TODO(#123)`
 - Merge conflict markers
 

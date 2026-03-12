@@ -65,7 +65,7 @@ Use this priority:
 
 Present the base branch to the user:
 
-> "PR gegen `main` — passt das?"
+> "PR targets `main` — does that look right?"
 
 Only wait for confirmation if the base branch seems unusual (e.g., not `main`
 or `develop`). For the default branch, proceed unless the user intervenes.

@@ -152,7 +152,7 @@ Present the plan for final approval.
 
 Once the plan is approved, ask the user directly:
 
-> "Der Plan steht. Gibt es noch Rückfragen oder sollen wir direkt loslegen?"
+> "The plan is ready. Any questions, or shall we start building?"
 
 - If the user has questions — answer them, iterate on the plan.
 - If the user says go — **transition seamlessly into the develop pipeline.**

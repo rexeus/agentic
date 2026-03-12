@@ -14,22 +14,23 @@ fi
 INPUT=$(cat)
 COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null || echo "")
 
-# Only validate git commit commands
-if ! printf '%s\n' "$COMMAND" | grep -qE '^[[:space:]]*git[[:space:]]+commit'; then
+# Only validate git commit commands (including command chains: && ; |)
+if ! printf '%s\n' "$COMMAND" | grep -qE '(^|&&|;|\|)[[:space:]]*git[[:space:]]+commit'; then
   exit 0
 fi
 
 # Extract the commit message from -m flag
-# Handles: git commit -m "msg", git commit -m 'msg', git commit -m "$(cat <<'EOF'\n...\nEOF\n)"
+# Handles: git commit -m "msg", git commit -m 'msg', git commit -am "msg",
+# git commit -m "$(cat <<'EOF'\n...\nEOF\n)"
 MSG=""
-if printf '%s\n' "$COMMAND" | grep -qE '\-m[[:space:]]'; then
+if printf '%s\n' "$COMMAND" | grep -qE '\-[a-z]*m[[:space:]]|\-[a-z]*m"|\-[a-z]*m'"'"''; then
   # Check for HEREDOC format first — must come before simple extraction,
   # otherwise the sed below will match "$(cat <<" as message content
   if printf '%s\n' "$COMMAND" | grep -q 'cat <<'; then
     MSG=$(printf '%s\n' "$COMMAND" | sed -n "/cat <<.*EOF/,/EOF/p" | sed '1d;$d')
   else
-    # Simple: git commit -m "msg" or git commit -m 'msg'
-    MSG=$(printf '%s\n' "$COMMAND" | sed -n 's/.*-m[[:space:]]*["'"'"']\(.*\)["'"'"'].*/\1/p' | head -1)
+    # Simple: git commit -m "msg", git commit -m 'msg', or git commit -am "msg"
+    MSG=$(printf '%s\n' "$COMMAND" | sed -n 's/.*-[a-z]*m[[:space:]]*["'"'"']\(.*\)["'"'"'].*/\1/p' | head -1)
   fi
 fi
 

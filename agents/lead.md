@@ -365,7 +365,7 @@ This gives the human a clear view of where we are at all times.
 When a plan is approved and the user wants to proceed:
 
 - **Do NOT** wait for them to manually invoke `/agentic:develop`.
-- Ask: "Alles klar — sollen wir direkt loslegen?" (or equivalent).
+- Ask: "The plan is ready. Shall we start building?"
 - If yes, transition seamlessly into the develop pipeline. You already have
   the plan, the context, and the momentum. Use it.
 

@@ -1,0 +1,189 @@
+---
+description: Iterative codebase harmonization. Discovers patterns, finds inconsistencies, and unifies code across files.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash, Agent
+argument-hint: "<scope: path, concept, or --dry-run>"
+---
+
+# Polish
+
+Iterative codebase harmonization. This command discovers the patterns your
+project already uses, finds where files diverge, and systematically unifies
+everything — same voice, same structure, same quality across every file.
+
+**Designed for the loop.** Run it, review the changes, clear context, run again.
+Each pass finds fewer issues until the codebase converges.
+
+**Usage:**
+
+- `/agentic:polish src/services/` — polish a specific area
+- `/agentic:polish services and repositories` — polish by concept
+- `/agentic:polish` — will ask what to polish
+- `/agentic:polish --dry-run` — discovery + plan only, no changes
+
+## Philosophy
+
+Consistency is not about rules — it's about voice. When every file reads like it
+was written by the same developer, the codebase becomes navigable by intuition.
+You know where things are before you look. You know how they work before you read.
+
+This is not `/agentic:review` (which finds issues in a diff) and not
+`/agentic:simplify` (which reduces complexity within code). Polish compares
+**peer files against each other** and unifies them toward a single voice.
+
+## Workflow
+
+### Step 1: Determine Scope
+
+Parse `$ARGUMENTS` to understand what to polish:
+
+- **File path** → polish that file against its peers
+- **Directory** → polish all files in that area
+- **Concept** (e.g., "services", "hooks", "components") → scout for relevant files
+- **`--dry-run`** → run Discovery + Synthesis only, skip Execute
+- **No arguments** → Ask the user:
+  "What should I polish? Options:
+  1. A specific directory (provide path)
+  2. An architectural layer (e.g., 'services', 'components', 'hooks')
+  3. The entire repository
+  4. Discovery only (`--dry-run` for analysis without changes)"
+
+### Step 2: Discovery
+
+Deploy 4 agents in parallel. Each brings a different lens — independent
+analysis, no cross-contamination between agents.
+
+**Scout 1 — Structure Map:**
+
+> Map the file structure within `<scope>`. For each file group (e.g., services,
+> components, hooks, utils), report: file names, naming patterns, export
+> patterns, file sizes (lines), and directory organization. Facts only.
+
+**Scout 2 — Quantitative Profile:**
+
+> Measure the code within `<scope>`. For each file, report: number of
+> functions/methods, function lengths (lines), parameter counts, nesting
+> depth, import counts. Present as a table. Facts only.
+
+**Analyst 1 — Pattern Extraction:**
+
+> Analyze the code within `<scope>` and extract the patterns currently in
+> use. Document: how are similar files structured? What conventions are
+> followed? What is the common shape of a service / component / hook /
+> repository? Produce a **Pattern Catalog** — the project's current voice.
+
+**Analyst 2 — Cross-File Comparison:**
+
+> Compare files of the same type within `<scope>`. For each group of peer
+> files (e.g., all services, all components), identify: where do they
+> diverge in structure, naming, error handling, or approach? Where is code
+> duplicated? Where do patterns contradict? Produce an **Inconsistency Report**.
+
+### Step 3: Codebase Portrait
+
+Synthesize the 4 reports into a unified view:
+
+```
+## Codebase Portrait: <scope>
+
+### Current Patterns
+<The project's voice — what conventions and structures are actually used>
+
+### Inconsistencies
+
+**High** — Patterns that fundamentally differ between peer files:
+- ...
+
+**Medium** — Structural differences, naming inconsistencies:
+- ...
+
+**Low** — Minor formatting, ordering differences:
+- ...
+
+### Duplication
+<Code that appears in multiple places and should be extracted>
+
+### Recommended Standard
+<For each file group: the pattern that should become the norm,
+based on what the majority already does or what the best example does>
+
+### Estimated Scope
+- Files to change: <count>
+- Nature: <what kinds of changes>
+```
+
+Present the Codebase Portrait to the user. **Wait for approval before proceeding.**
+
+If `--dry-run` was specified, stop here. The portrait IS the deliverable.
+
+### Step 4: Unification Plan
+
+Deploy the **architect** with the Codebase Portrait:
+
+> Design a unification plan for `<scope>`. The Codebase Portrait shows the
+> current patterns and inconsistencies. Produce a concrete plan: which
+> pattern becomes the standard for each file group, which files need changes,
+> and in what order (dependencies first, leaf files last). Group changes
+> logically so each group can be verified independently.
+
+Present the plan to the user. **Wait for approval.**
+
+### Step 5: Execute
+
+Deploy the **developer** with:
+
+- The full architect plan (not a summary)
+- The Pattern Catalog from Analyst 1 (so the developer matches the voice)
+- The scout reports (for codebase context)
+- Clear scope boundaries
+- Test command
+
+The developer works group by group. After each logical group:
+
+1. Run tests to catch regressions
+2. Verify the changes match the approved pattern
+
+If the scope is large, check in with the user between groups.
+
+### Step 6: Verify
+
+Launch in parallel:
+
+**reviewer** — Check that the changes are consistent with the approved pattern
+and don't introduce bugs. Compare modified files against the Pattern Catalog.
+
+**tester** — Confirm all tests pass and no behavior changed.
+
+If the reviewer finds regressions toward inconsistency, send the developer
+back with specific findings. Re-verify after fixes.
+
+### Step 7: Convergence Report
+
+```
+## Polish Report: <scope>
+
+### Changes Applied
+- Files modified: <count>
+- Nature: <summary of what was unified>
+
+### Consistency
+- Before: <X inconsistencies across Y file groups>
+- After: <X inconsistencies remaining>
+
+### What Was Unified
+1. **<category>** — <what changed and why>
+2. ...
+
+### What Remains
+- <areas that were out of scope or need a separate pass>
+- <deeper structural issues that require design decisions>
+
+### Convergence
+<One of:>
+- "Significant inconsistencies remain. Another pass is recommended."
+- "Minor inconsistencies remain. One more pass should reach convergence."
+- "No significant inconsistencies detected. Codebase is harmonized."
+
+### Next Steps
+- <If more passes needed>: "Clear context and run `/agentic:polish <scope>` again."
+- <If harmonized>: "Ready for `/agentic:commit`."
+```

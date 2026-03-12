@@ -234,6 +234,9 @@ scout → analyst → architect → developer → reviewer
 **Simplify** — Reduce complexity, preserve behavior.
 analyst → refiner → tester
 
+**Polish** — Codebase harmonization, iterative.
+scout (×2) + analyst (×2) parallel → portrait → architect → developer → reviewer + tester
+
 **Investigate** — Understand before deciding.
 scout → analyst → report to user
 

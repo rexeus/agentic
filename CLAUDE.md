@@ -12,6 +12,7 @@ coding session.
 - **Code ready for review?** `/agentic:review` — focused code review on a PR, branch, or staged changes. Finds bugs, security issues, convention violations.
 - **Changes ready to ship?** `/agentic:verify` — pre-ship quality gate. Runs correctness review, complexity analysis, AND tests in parallel. Broader than review.
 - **Code too complex?** `/agentic:simplify` — distill working code to its essence.
+- **Codebase inconsistent?** `/agentic:polish` — discover patterns, find divergence, unify. Designed for iterative runs.
 - **Ready to commit?** `/agentic:commit` — Conventional Commits from staged changes.
 - **Ready for a PR?** `/agentic:pr` — create or update a Pull Request with a crafted description.
 

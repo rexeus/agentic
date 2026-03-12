@@ -30,6 +30,7 @@ with any command:
 /agentic:develop   Build it
 /agentic:review    Review the code
 /agentic:simplify  Make it simpler
+/agentic:polish    Harmonize the codebase
 /agentic:verify    Run the quality gate
 /agentic:commit    Commit with Conventional Commits
 /agentic:pr        Create a Pull Request
@@ -41,6 +42,8 @@ A typical development cycle with Agentic:
 
 ```
 Plan → Develop → Review → Simplify → Verify → Commit → PR
+                                ↑
+                              Polish (iterative loop)
 ```
 
 **1. Plan.** Start with `/agentic:plan`. The Lead doesn't just accept your
@@ -61,6 +64,13 @@ independently for unbiased analysis. High-confidence findings only.
 distills working code to its essence — fewer abstractions, clearer names, less
 indirection. Behavior stays the same. Complexity goes down. This step is what
 separates code that works from code that sings.
+
+**Polish.** `/agentic:polish` is the consistency loop. It discovers the patterns
+your project already uses, finds where peer files diverge, and unifies them.
+Use it after a feature is built, after a large refactor, or whenever files have
+drifted apart. Polish is designed for iterative runs: execute, review the
+changes, then `/clear` and run `/agentic:polish` again. Each pass finds fewer
+issues until the codebase converges.
 
 **5. Verify.** `/agentic:verify` is the pre-ship quality gate. It runs
 correctness review, complexity analysis, and tests in parallel. One command,

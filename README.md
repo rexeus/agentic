@@ -17,14 +17,6 @@ Built for TypeScript projects. Should work with other languages too.
 
 ## Quick Start
 
-Install from the official Claude Code marketplace:
-
-```
-/plugin install agentic
-```
-
-Or add the self-hosted marketplace:
-
 ```
 /plugin marketplace add rexeus/agentic
 /plugin install agentic@rexeus
@@ -90,7 +82,7 @@ Scout       → "What is here?"              Fast codebase reconnaissance
 Analyst     → "How does this work?"        Traces logic and data flows
 Architect   → "How should it be?"          Designs solutions, evaluates trade-offs
 Developer   → "Here's the implementation." The only agent that writes source code
-Reviewer    → "Is this correct?"           Reviews for correctness and security
+Reviewer    → "Is this correct?"           Reviews for quality, correctness, and conventions
 Tester      → "Does it actually work?"     Writes and runs tests
 Refiner     → "How can this be simpler?"   Distills code to its essence
 Lead        → Orchestrates all above       Delegates, synthesizes, keeps you in the loop
@@ -110,13 +102,14 @@ thing well.
 Skills are background knowledge that agents load automatically. They inform
 decisions without cluttering your workflow.
 
-| Skill              | Purpose                                                 |
-| ------------------ | ------------------------------------------------------- |
-| `conventions`      | Code style, naming, structure, types, error handling    |
-| `quality-patterns` | Anti-patterns, coupling, duplication, positive patterns |
-| `security`         | Injection, auth, data exposure, input validation        |
-| `testing`          | Test philosophy, layers, doubles, anti-patterns         |
-| `git-conventions`  | Conventional Commits, branch naming, commit discipline  |
+| Skill              | Purpose                                                    |
+| ------------------ | ---------------------------------------------------------- |
+| `conventions`      | Code style, naming, structure, types, error handling       |
+| `quality-patterns` | Anti-patterns, coupling, duplication, positive patterns    |
+| `security`         | Injection, auth, data exposure, input validation           |
+| `testing`          | Test philosophy, layers, doubles, anti-patterns            |
+| `git-conventions`  | Conventional Commits, branch naming, PR descriptions       |
+| `setup`            | Getting started with Agentic, workflow, and agent overview |
 
 ## Hooks & Guardrails
 
@@ -124,13 +117,13 @@ The plugin enforces quality through automated hooks at two levels:
 
 **Before writing** (PreToolUse) — blocks the action if violated:
 
-- Secret detection — hardcoded passwords, API tokens (OpenAI, GitHub, AWS patterns)
-- Commit message validation — Conventional Commits format, lowercase, max 100 chars
+- Secret detection — hardcoded passwords, secrets, API keys, access keys (OpenAI, GitHub, AWS patterns)
+- Commit message validation — Conventional Commits format, lowercase, no trailing period, max 100 chars
 - Plan mode blocking — agents manage planning through conversation, not native plan mode
 
 **After writing** (PostToolUse) — informational warnings, never blocking:
 
-- Debug statements in JS/TS (console.log, debugger)
+- Debug statements in JS/TS (console.log, console.debug, console.warn, debugger)
 - Unowned TODOs — use `TODO(name)` or `TODO(#123)`
 - Merge conflict markers
 

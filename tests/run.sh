@@ -7,6 +7,10 @@
 #   ./tests/run.sh secrets      Run only block-secrets tests
 #   ./tests/run.sh commit       Run only commit validation tests
 #   ./tests/run.sh conventions  Run only convention check tests
+#   ./tests/run.sh opencode-cli Run only OpenCode CLI flow tests
+#   ./tests/run.sh opencode-guardrails Run only OpenCode guardrail helper tests
+#   ./tests/run.sh opencode-plugin Run only OpenCode plugin hook tests
+#   ./tests/run.sh opencode-sync-lib Run only opencode-sync-lib pure function tests
 
 set -euo pipefail
 
@@ -130,10 +134,14 @@ case "$FILTER" in
   secrets)     TEST_FILES=("$SCRIPT_DIR/block-secrets.test.sh") ;;
   commit)      TEST_FILES=("$SCRIPT_DIR/validate-commit-msg.test.sh") ;;
   conventions) TEST_FILES=("$SCRIPT_DIR/check-conventions.test.sh") ;;
+  opencode-cli) TEST_FILES=("$SCRIPT_DIR/opencode-cli.test.sh") ;;
+  opencode-guardrails) TEST_FILES=("$SCRIPT_DIR/opencode-guardrails.test.sh") ;;
+  opencode-plugin) TEST_FILES=("$SCRIPT_DIR/opencode-plugin.test.sh") ;;
+  opencode-sync-lib) TEST_FILES=("$SCRIPT_DIR/opencode-sync-lib.test.sh") ;;
   all)         TEST_FILES=("$SCRIPT_DIR"/*.test.sh) ;;
   *)
     echo "Unknown suite: $FILTER"
-    echo "Usage: $0 [secrets|commit|conventions|all]"
+    echo "Usage: $0 [secrets|commit|conventions|opencode-cli|opencode-guardrails|opencode-plugin|opencode-sync-lib|all]"
     exit 1
     ;;
 esac

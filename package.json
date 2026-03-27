@@ -1,13 +1,14 @@
 {
   "name": "@rexeus/agentic",
   "version": "0.3.1",
-  "description": "Multi-agent development toolkit for Claude Code. Specialized agents, conventions, review workflows, and quality guardrails for TypeScript and JavaScript projects.",
+  "description": "Multi-agent development toolkit for Claude Code and OpenCode. Specialized agents, conventions, review workflows, and quality guardrails for TypeScript and JavaScript projects.",
   "keywords": [
     "agentic-coding",
     "claude-code",
     "code-quality",
     "code-review",
     "conventions",
+    "opencode",
     "plugin",
     "refactoring"
   ],
@@ -21,12 +22,48 @@
     "type": "git",
     "url": "git+https://github.com/rexeus/agentic.git"
   },
+  "bin": {
+    "agentic": "./bin/agentic.js"
+  },
+  "files": [
+    "assets/opencode/agents",
+    "assets/opencode/commands",
+    "bin",
+    "opencode",
+    "skills",
+    "README.md",
+    "LICENSE*"
+  ],
+  "type": "module",
+  "main": "./opencode/plugin.mjs",
+  "exports": {
+    ".": "./opencode/plugin.mjs"
+  },
   "scripts": {
     "test": "bash tests/run.sh",
-    "format": "oxfmt"
+    "format": "oxfmt",
+    "sync:opencode-agents": "node scripts/sync-opencode-agents.mjs",
+    "sync:opencode-commands": "node scripts/sync-opencode-commands.mjs",
+    "check:agent-parity": "node scripts/check-agent-parity.mjs",
+    "check:command-parity": "node scripts/check-command-parity.mjs",
+    "check:opencode": "bash tests/run.sh opencode-cli",
+    "sync:versions": "node scripts/sync-versions.mjs",
+    "check:versions": "node scripts/sync-versions.mjs --check",
+    "release": "changeset",
+    "version-packages": "changeset version && pnpm run sync:versions",
+    "ci:publish": "pnpm publish --access public"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1"
   },
   "devDependencies": {
+    "@changesets/cli": "2.29.6",
     "oxfmt": "^0.36.0"
   },
-  "packageManager": "pnpm@10.19.0"
+  "packageManager": "pnpm@10.19.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "@changesets/assemble-release-plan@6.0.9": "patches/@changesets__assemble-release-plan@6.0.9.patch"
+    }
+  }
 }

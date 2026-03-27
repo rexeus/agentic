@@ -1,7 +1,7 @@
 # @rexeus/agentic
 
-A multi-agent development toolkit for Claude Code. Seven specialized agents,
-one orchestrator, zero complexity.
+A multi-agent development toolkit for Claude Code and OpenCode. Seven specialized
+agents, one orchestrator, zero complexity.
 
 ## Why
 
@@ -17,23 +17,33 @@ Built for TypeScript projects. Should work with other languages too.
 
 ## Quick Start
 
+### OpenCode (recommended)
+
+```bash
+npx skills add rexeus/agentic -g --all -y
+npx @rexeus/agentic install opencode
+```
+
+This installs the Agentic plugin, commands, agents, and skills globally.
+
+Restart OpenCode, switch to the visible `lead` agent, then run:
+
+```
+/agentic-plan      Plan a feature
+/agentic-develop   Build it
+/agentic-review    Review the code
+/agentic-simplify  Make it simpler
+/agentic-polish    Harmonize the codebase
+/agentic-verify    Run the quality gate
+/agentic-commit    Commit with Conventional Commits
+/agentic-pr        Create a Pull Request
+```
+
+### Claude Code
+
 ```
 /plugin marketplace add rexeus/agentic
 /plugin install agentic@rexeus
-```
-
-That's it. The Lead agent activates automatically as your main thread. Start
-with any command:
-
-```
-/agentic:plan      Plan a feature
-/agentic:develop   Build it
-/agentic:review    Review the code
-/agentic:simplify  Make it simpler
-/agentic:polish    Harmonize the codebase
-/agentic:verify    Run the quality gate
-/agentic:commit    Commit with Conventional Commits
-/agentic:pr        Create a Pull Request
 ```
 
 ## The Workflow
@@ -46,39 +56,55 @@ Plan → Develop → Review → Simplify → Verify → Commit → PR
                               Polish (iterative loop)
 ```
 
-**1. Plan.** Start with `/agentic:plan`. The Lead doesn't just accept your
+**1. Plan.** Start with `/agentic-plan` (OpenCode) or `/agentic:plan` (Claude Code).
+The Lead doesn't just accept your
 requirements — it challenges them. It asks hard questions, surfaces assumptions,
 and presents options before producing an implementation plan. You approve the
 plan before any code is written.
 
-**2. Develop.** `/agentic:develop` runs the full pipeline. The Lead scouts the
+**2. Develop.** `/agentic-develop` (OpenCode) or `/agentic:develop` (Claude Code)
+runs the full pipeline. The Lead scouts the
 codebase, designs the approach, hands a precise briefing to the developer agent,
 and follows up with review and tests. You get working, tested code — not a plan
 about a plan.
 
-**3. Review.** `/agentic:review` deploys parallel reviewers with different
+**3. Review.** `/agentic-review` (OpenCode) or `/agentic:review` (Claude Code)
+deploys parallel reviewers with different
 focus areas — correctness, security, conventions. Each reviewer works
 independently for unbiased analysis. High-confidence findings only.
 
-**4. Simplify.** `/agentic:simplify` is where the craft happens. The Refiner
+**4. Simplify.** `/agentic-simplify` (OpenCode) or `/agentic:simplify` (Claude Code)
+is where the craft happens. The Refiner
 distills working code to its essence — fewer abstractions, clearer names, less
 indirection. Behavior stays the same. Complexity goes down. This step is what
 separates code that works from code that sings.
 
-**Polish.** `/agentic:polish` is the consistency loop. It discovers the patterns
+**Polish.** `/agentic-polish` (OpenCode) or `/agentic:polish` (Claude Code)
+is the consistency loop. It discovers the patterns
 your project already uses, finds where peer files diverge, and unifies them.
 Use it after a feature is built, after a large refactor, or whenever files have
 drifted apart. Polish is designed for iterative runs: execute, review the
-changes, then `/clear` and run `/agentic:polish` again. Each pass finds fewer
+changes, then `/clear` and run it again. Each pass finds fewer
 issues until the codebase converges.
 
-**5. Verify.** `/agentic:verify` is the pre-ship quality gate. It runs
+**5. Verify.** `/agentic-verify` (OpenCode) or `/agentic:verify` (Claude Code)
+is the pre-ship quality gate. It runs
 correctness review, complexity analysis, and tests in parallel. One command,
 three perspectives, a clear verdict: PASS, FAIL, or CONDITIONAL.
 
-**6. Commit & PR.** `/agentic:commit` creates Conventional Commits from your
-staged changes. `/agentic:pr` crafts a Pull Request with a structured
+**6. Commit & PR.** `/agentic-commit` + `/agentic-pr` (OpenCode) or
+`/agentic:commit` + `/agentic:pr` (Claude Code) handle commit and PR flow.
+`commit` creates Conventional Commits from your
+staged changes. `pr` crafts a Pull Request with a structured
 description. You stage the files — the agents handle the message.
+
+### OpenCode CLI
+
+```bash
+agentic install opencode
+agentic doctor
+agentic uninstall opencode
+```
 
 You don't have to use every step. Skip what you don't need. The commands work
 independently.
@@ -98,15 +124,20 @@ Refiner     → "How can this be simpler?"   Distills code to its essence
 Lead        → Orchestrates all above       Delegates, synthesizes, keeps you in the loop
 ```
 
-The Lead runs as your main thread (configured in `settings.json`). When you
-describe a task, the Lead decides which specialists to deploy, in what order,
-and with what briefing. You see the plan before it executes.
+The Lead runs as your main thread. In Claude Code, that is configured through
+`settings.json`. When you describe a task, the Lead decides which specialists
+to deploy, in what order, and with what briefing. You see the plan before it
+executes.
 
-Every agent has a **Stop hook** — an LLM-based guardrail that checks whether the
-agent stayed in its role before returning results. The Developer is checked
-against planning. The Reviewer against implementing. The Architect against
-writing tests. These are probabilistic guardrails, not hard walls — but they
-catch most role drift.
+In OpenCode, `lead` is installed as a first-class primary agent. The rest of
+the team is installed as hidden subagents so the experience still flows through
+one visible orchestrator instead of eight competing entry points.
+
+Claude Code agents also have **Stop hooks** — LLM-based guardrails that check
+whether the agent stayed in its role before returning results. The Developer is
+checked against planning. The Reviewer against implementing. The Architect
+against writing tests. These are probabilistic guardrails, not hard walls — but
+they catch most role drift.
 
 ## Skills
 
@@ -122,28 +153,48 @@ decisions without cluttering your workflow.
 | `git-conventions`  | Conventional Commits, branch naming, PR descriptions       |
 | `setup`            | Getting started with Agentic, workflow, and agent overview |
 
+## Configuration
+
+Agentic works out of the box with zero configuration. But you can customize
+models per agent in your `opencode.json`:
+
+```json
+{
+  "agent": {
+    "lead": { "model": "openai/gpt-5.4" },
+    "scout": { "model": "anthropic/claude-haiku-4-5" },
+    "developer": { "model": "openai/gpt-5.4" }
+  }
+}
+```
+
+Model IDs use the `provider/model` format — the same format as your top-level
+`model` setting. Agents without an explicit override use your default. This
+lets you balance cost and capability — a fast model for the scout, a capable
+model for the lead and developer, and your default for everything else.
+
+In Claude Code, model overrides are configured in `settings.json` via the
+`agentSettings` key.
+
 ## Hooks & Guardrails
 
-The plugin enforces quality through automated hooks at two levels:
+Both integrations enforce the same core guardrails:
 
-**Before writing** (PreToolUse) — blocks the action when a violation is detected:
+- Secret detection before write/edit (hardcoded passwords, secrets, API tokens)
+- Conventional Commit validation on `git commit` messages
+- Convention warnings after edits (debug statements, unowned TODOs, conflict markers)
 
-- Secret detection — hardcoded passwords, secrets, API keys (OpenAI, GitHub, AWS, Stripe, Slack patterns). Requires `jq` for JSON parsing; falls back to skipping if unavailable.
-- Commit message validation — Conventional Commits format, lowercase, no trailing period, max 100 chars. Auto-skips if the project's recent history doesn't use Conventional Commits.
-- Plan mode blocking — agents manage planning through conversation, not native plan mode
+**Claude Code integration** (`hooks/hooks.json`, shell scripts, and `settings.json`) also includes:
 
-These hooks use pattern matching and are deterministic — but regex-based
-detection has limits. They catch common cases, not every possible encoding.
+- Native plan mode blocking to keep planning inside Agentic workflows
+- Agent-level Stop hooks for role compliance checks
 
-**After writing** (PostToolUse) — informational warnings, never blocking:
+**OpenCode integration** (`opencode/plugin.mjs`) applies the same write/commit
+guardrails through `tool.execute.before` and post-edit warnings through
+`tool.execute.after`.
 
-- Debug statements in JS/TS (console.log, console.debug, debugger)
-- Unowned TODOs — use `TODO(name)` or `TODO(#123)`
-- Merge conflict markers
-
-**Agent-level** — every agent carries a prompt-based Stop hook that evaluates
-role compliance before returning results. These are LLM-based and probabilistic —
-effective but not infallible.
+All guardrails are pattern-based and intentionally conservative. They catch high-signal
+issues, but they are not a substitute for human review.
 
 ## License
 

@@ -70,20 +70,28 @@ Present the base branch to the user:
 Only wait for confirmation if the base branch seems unusual (e.g., not `main`
 or `develop`). For the default branch, proceed unless the user intervenes.
 
-### Step 3: Push if Needed
+### Step 3: Verify Push State
 
-If the branch has no upstream tracking:
-
-> "Branch `feature/token-refresh` has no upstream. Pushing to origin now."
-
-Then push:
+Check whether the local branch is up-to-date with its remote:
 
 ```bash
-git push -u origin <current-branch>
+git rev-parse HEAD
+git rev-parse @{upstream} 2>/dev/null
 ```
 
-If the branch is behind the remote (diverged), stop and inform the user.
-Do not force-push.
+**If no upstream exists**, stop and tell the user:
+
+> "Branch `feature/token-refresh` has no remote tracking branch.
+> Push it first: `git push -u origin feature/token-refresh`"
+
+**If local is ahead of remote** (unpushed commits), stop and tell the user:
+
+> "Branch has unpushed commits. Push first: `git push`"
+
+**If diverged**, stop and tell the user to reconcile.
+
+**Never push.** Pushing is the user's responsibility. Only proceed to Step 4
+when local and remote are in sync.
 
 ### Step 4: Analyze Changes
 

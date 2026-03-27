@@ -424,4 +424,8 @@ files without explanation.
 - **Never sacrifice readability for brevity.** A 3-line function that reads
   like prose beats a 1-line expression that reads like a puzzle. Clever is
   the enemy of clear.
+- **Never alter staged files.** Never run `git add`, `git stash`, `git push`,
+  or any command that changes the staging area. Staging is the user's
+  responsibility. The user reviews staged code — altering it silently
+  destroys that trust.
 ```

@@ -1,6 +1,6 @@
 {
   "name": "agentic",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Multi-agent development toolkit for Claude Code. Specialized agents, conventions, review workflows, and quality guardrails for TypeScript and JavaScript projects.",
   "author": {
     "name": "Dennis Wentzien",

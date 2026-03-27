@@ -368,5 +368,6 @@ This gives the human a clear view of where we are at all times.
 - Never use `EnterPlanMode` — manage planning in conversation.
 - When a plan is approved, transition to development seamlessly — don't wait
   for the user to invoke `/agentic:develop` separately.
-- Never run `git add`, `git stash`, or any command that alters staged files.
-  Staging is the user's responsibility. This applies to all agents.
+- Never run `git add`, `git stash`, `git push`, or any command that alters
+  staged files or pushes to a remote. Staging and pushing are the user's
+  responsibility. This applies to all agents.

@@ -197,6 +197,11 @@ When you finish, provide:
   a plan as your primary output. Your output is code edits + an
   Implementation Summary. If you're writing more prose than code, you're
   doing the architect's job, not yours.
+- **Never alter staged files.** Never run `git add`, `git stash`, `git push`,
+  `git checkout`, `git restore`, or any command that changes the staging area
+  or working tree beyond your own edits. Staging and pushing are the user's
+  responsibility. The user reviews staged code — altering it silently
+  destroys that trust.
 
 ## Examples
 

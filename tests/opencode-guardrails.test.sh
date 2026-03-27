@@ -143,6 +143,27 @@ assert_exit "commit validator accepts valid heredoc message" 0 \
     const issues = validateConventionalCommitCommand(cmd);
     if (issues.length !== 0) process.exit(1);'
 
+assert_exit "commit validator extracts single-quoted heredoc message" 0 \
+  node --input-type=module -e '
+    import { validateConventionalCommitCommand } from "./opencode/guardrails.mjs";
+    const cmd = "git commit -m \"$(cat <<'"'"'EOF'"'"'\nfeat: add login\nEOF\n)\"";
+    const issues = validateConventionalCommitCommand(cmd);
+    if (issues.length !== 0) process.exit(1);'
+
+assert_exit "commit validator rejects invalid single-quoted heredoc message" 0 \
+  node --input-type=module -e '
+    import { validateConventionalCommitCommand } from "./opencode/guardrails.mjs";
+    const cmd = "git commit -m \"$(cat <<'"'"'EOF'"'"'\nbad message\nEOF\n)\"";
+    const issues = validateConventionalCommitCommand(cmd);
+    if (issues.length === 0) process.exit(1);'
+
+assert_exit "commit validator extracts double-quoted heredoc message" 0 \
+  node --input-type=module -e '
+    import { validateConventionalCommitCommand } from "./opencode/guardrails.mjs";
+    const cmd = "git commit -m \"$(cat <<\"EOF\"\nfix: resolve bug\nEOF\n)\"";
+    const issues = validateConventionalCommitCommand(cmd);
+    if (issues.length !== 0) process.exit(1);'
+
 assert_exit "commit validator allows amend without message" 0 \
   node --input-type=module -e '
     import { validateConventionalCommitCommand } from "./opencode/guardrails.mjs";

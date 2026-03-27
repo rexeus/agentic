@@ -57,9 +57,9 @@ const extractCommitMessage = (command) => {
     return "";
   }
 
-  const heredocMatch = command.match(/cat <<.*EOF([\s\S]*?)\nEOF\n?/);
-  if (heredocMatch && heredocMatch[1]) {
-    return heredocMatch[1].trim();
+  const heredocMatch = command.match(/cat <<\s*(["']?)EOF\1\s*\n([\s\S]*?)\nEOF\n?/);
+  if (heredocMatch && heredocMatch[2]) {
+    return heredocMatch[2].trim();
   }
 
   const quotedMatch = command.match(/-[a-z]*m[\t ]*["']([^"']+)["']/);

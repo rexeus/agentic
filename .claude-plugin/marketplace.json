@@ -12,7 +12,7 @@
       "name": "agentic",
       "source": "./",
       "description": "Seven specialized agents, structured workflows, and quality guardrails. Install and start building — no configuration needed.",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "author": {
         "name": "Dennis Wentzien"
       },

@@ -20,13 +20,11 @@ Built for TypeScript projects. Should work with other languages too.
 ### OpenCode (recommended)
 
 ```bash
-npx skills add rexeus/agentic -g --all -y
 npx @rexeus/agentic install opencode
 ```
 
-This installs the Agentic plugin, commands, agents, and skills globally.
-
-Restart OpenCode, switch to the visible `lead` agent, then run:
+One command. This installs the Agentic plugin, agents, commands, and skills
+globally. Restart OpenCode, switch to the visible `lead` agent, then run:
 
 ```
 /agentic-plan      Plan a feature
@@ -152,6 +150,15 @@ decisions without cluttering your workflow.
 | `testing`          | Test philosophy, layers, doubles, anti-patterns            |
 | `git-conventions`  | Conventional Commits, branch naming, PR descriptions       |
 | `setup`            | Getting started with Agentic, workflow, and agent overview |
+
+Agentic is compatible with the [`skills` CLI](https://github.com/vercel-labs/skills).
+You can use it to update skills via `npx skills update` or install additional
+third-party skills alongside Agentic. To add Agentic skills through the skills
+CLI instead of the built-in installer:
+
+```bash
+npx skills add rexeus/agentic -g --all -y
+```
 
 ## Configuration
 

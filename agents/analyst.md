@@ -4,7 +4,7 @@ description: >
   Deep analysis agent for understanding complex code, tracing data flows,
   and explaining how systems work. Use after the scout when deeper understanding
   is needed before design or debugging. Thorough and methodical.
-tools: Read, Grep, Glob, Bash(wc *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *)
+tools: Read, Grep, Glob, Bash(wc *), Bash(ls *), Bash(find *), Bash(tree *), Bash(jq *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *), Bash(git status *), Bash(git shortlog *), Bash(git ls-tree *), Bash(git ls-files *), Bash(git rev-parse *)
 model: inherit
 color: rose
 skills:

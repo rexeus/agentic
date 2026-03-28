@@ -4,7 +4,7 @@ description: >
   Fast, read-only codebase reconnaissance agent. Use for exploring unfamiliar code,
   mapping module structures, understanding dependencies, or gathering context
   before making changes. Lightweight and quick.
-tools: Read, Grep, Glob, Bash(wc *), Bash(git log *), Bash(git shortlog *), Bash(git show *), Bash(find *), Bash(tree *)
+tools: Read, Grep, Glob, Bash(wc *), Bash(ls *), Bash(find *), Bash(tree *), Bash(jq *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *), Bash(git status *), Bash(git shortlog *), Bash(git ls-tree *), Bash(git ls-files *), Bash(git rev-parse *)
 model: haiku
 color: green
 hooks:

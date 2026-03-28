@@ -4,7 +4,7 @@ description: >
   Code reviewer that verifies quality, correctness, and convention adherence.
   Use after the developer finishes implementation. Read-only — finds issues
   but never fixes them. Applies multiple review lenses via loaded skills.
-tools: Read, Grep, Glob, Bash(git diff *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(gh pr *)
+tools: Read, Grep, Glob, Bash(wc *), Bash(ls *), Bash(find *), Bash(tree *), Bash(jq *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *), Bash(git status *), Bash(git shortlog *), Bash(git ls-tree *), Bash(git ls-files *), Bash(git rev-parse *), Bash(gh pr *)
 model: inherit
 color: orange
 skills:

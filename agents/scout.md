@@ -4,7 +4,7 @@ description: >
   Fast, read-only codebase reconnaissance agent. Use for exploring unfamiliar code,
   mapping module structures, understanding dependencies, or gathering context
   before making changes. Lightweight and quick.
-tools: Read, Grep, Glob, Bash(wc *), Bash(git log *), Bash(git shortlog *), Bash(git show *), Bash(find *), Bash(tree *)
+tools: Read, Grep, Glob, Bash(wc *), Bash(ls *), Bash(tree *), Bash(jq *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *), Bash(git status *), Bash(git shortlog *), Bash(git ls-tree *), Bash(git ls-files *), Bash(git rev-parse *)
 model: haiku
 color: green
 hooks:
@@ -71,6 +71,8 @@ If required fields are missing, ask the Lead before proceeding.
 4. **Trace dependencies.** Follow import chains to understand module relationships.
 5. **Read the room.** CLAUDE.md, README, docs/, config files, git history.
 6. **Note the patterns.** Naming conventions, architecture patterns, testing approach.
+
+**Tool preference.** Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Prefer these over `find` — they're narrower and make intent explicit.
 
 ## Output Format
 

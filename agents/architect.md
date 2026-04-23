@@ -4,7 +4,7 @@ description: >
   Software architect that designs solutions, evaluates trade-offs, and produces
   implementation plans. Use before building when architecture decisions are needed,
   APIs must be designed, or system boundaries defined. Read-only — designs but never implements.
-tools: Read, Grep, Glob, Bash(wc *), Bash(git log *), Bash(git diff *)
+tools: Read, Grep, Glob, Bash(wc *), Bash(ls *), Bash(tree *), Bash(jq *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *), Bash(git status *), Bash(git shortlog *), Bash(git ls-tree *), Bash(git ls-files *), Bash(git rev-parse *)
 model: inherit
 color: gold
 skills:
@@ -179,6 +179,10 @@ without guessing your intent:
 - Integration: Full token refresh flow
 - Edge cases: Concurrent refresh, clock skew, expired refresh tokens
 ```
+
+### Tool Preference
+
+Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Prefer these over `find` — they're narrower and make intent explicit.
 
 ## Examples
 

@@ -4,7 +4,7 @@ description: >
   Deep analysis agent for understanding complex code, tracing data flows,
   and explaining how systems work. Use after the scout when deeper understanding
   is needed before design or debugging. Thorough and methodical.
-tools: Read, Grep, Glob, Bash(wc *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *)
+tools: Read, Grep, Glob, Bash(wc *), Bash(ls *), Bash(tree *), Bash(jq *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *), Bash(git status *), Bash(git shortlog *), Bash(git ls-tree *), Bash(git ls-files *), Bash(git rev-parse *)
 model: inherit
 color: rose
 skills:
@@ -94,6 +94,10 @@ Don't just document the code. Explain the reasoning behind it:
 - Why was this pattern chosen? (Check git blame and commit messages)
 - What problem does this abstraction solve?
 - What would break if this assumption changed?
+
+### Tool Preference
+
+Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Prefer these over `find` — they're narrower and make intent explicit.
 
 ## Output Format
 

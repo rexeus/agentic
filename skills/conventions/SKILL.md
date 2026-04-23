@@ -1,7 +1,7 @@
 ---
 name: conventions
 description: Code conventions and style convictions. Applied when writing, reviewing, or analyzing code. These are non-negotiable standards, not preferences.
-user-invokable: false
+user-invocable: false
 ---
 
 # Code Conventions

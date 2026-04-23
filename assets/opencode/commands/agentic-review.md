@@ -56,27 +56,47 @@ If the diff is empty, report "Nothing to review." and stop.
 
 ### Step 3: Parallel Review
 
-Launch 3 review agents in parallel, each with the full diff and context:
+Launch four agents in parallel — the three reviewer specialists plus a
+read-only tester — each with the full diff and context. Every reviewer
+is a distinct specialist with its own identity and loaded skills; the
+briefings share core fields and differ only where the lens demands it.
 
-**Agent 1: Correctness Review** (reviewer agent)
-Focus: Logic errors, bugs, null access, race conditions, missing error handling.
-Lens: Correctness + Security + Plan Alignment from the reviewer's review lenses.
+**Agent 1: `reviewer-correctness`**
+Lens: logic errors, concurrency, error handling, edge cases, resource
+lifecycle, plan alignment.
+Briefing: Scope, Diff baseline, Context. Add Focus areas only when a
+specific correctness concern applies (e.g., "concurrency on the
+counter", "failure path when upstream is unreachable").
 
-**Agent 2: Convention Review** (reviewer agent)
-Focus: Naming, structure, patterns, CLAUDE.md compliance, code style.
-Lens: Conventions + Quality Patterns from the reviewer's review lenses.
+**Agent 2: `reviewer-security`**
+Lens: injection, AuthN/AuthZ, secrets, input validation at trust
+boundaries, data exposure, SSRF/deserialization, crypto, supply chain.
+Briefing: Scope, Diff baseline, Context. Add Trust boundaries and
+Deployment context when identifiable from the diff or repo (public
+endpoint vs internal tool, multi-tenant vs single-tenant).
 
-**Agent 3: Test Coverage Assessment** (tester agent, assessment mode)
+**Agent 3: `reviewer-maintainability`**
+Lens: naming, conventions, complexity, cohesion, coupling,
+readability, abstraction fit.
+Briefing: Scope, Diff baseline, Context. The agent reads CLAUDE.md and
+neighboring code itself — do not pre-summarize project conventions.
+
+**Agent 4: `tester` (assessment mode)**
 Focus: Are the changes adequately tested? What edge cases are missing?
-Mode: Read-only assessment. Do NOT write tests — only assess and report gaps.
-This overrides the tester's default write mode for this specific use case.
+Mode: Read-only assessment. Do NOT write tests — only assess and report
+gaps. This overrides the tester's default advisory scope only to the
+extent that no test files are produced for this specific use case.
 
 Each agent scores findings with confidence (0-100). Threshold: 80.
 
 ### Step 4: Synthesize
 
-Collect findings from all 3 agents. Deduplicate (same issue found by
-multiple agents counts once, with the highest confidence score).
+Collect findings from all four agents. Preserve the lens label on every
+reviewer finding (`[correctness]`, `[security]`, `[maintainability]`)
+so the reader can see which specialist flagged what. Deduplicate only
+when two reviewers flag literally the same line for the same reason —
+when a finding genuinely sits at the intersection of two lenses,
+report it once with both lenses listed.
 
 ### Step 5: Output
 
@@ -86,17 +106,18 @@ multiple agents counts once, with the highest confidence score).
 **Scope:** <what was reviewed>
 **Files:** <count>
 **Findings:** <count> (<critical> critical, <warnings> warnings, <suggestions> suggestions)
+**Lens verdicts:** correctness: <PASS|FAIL|CONDITIONAL> | security: <...> | maintainability: <...>
 
 ### Critical
-**[Critical | 95]** `file:line` — description
+**[Critical | 95 | correctness]** `file:line` — description
 Why: explanation
 
 ### Warnings
-**[Warning | 85]** `file:line` — description
+**[Warning | 85 | security]** `file:line` — description
 Why: explanation
 
 ### Suggestions
-**[Suggestion | 82]** `file:line` — description
+**[Suggestion | 82 | maintainability]** `file:line` — description
 
 ### Test Coverage
 - Covered: <what's tested>
@@ -105,6 +126,7 @@ Why: explanation
 
 ---
 **Confidence threshold: 80.** Lower-confidence findings were excluded.
+**Composite verdict:** worst of the three lens verdicts.
 To address findings: `/agentic-develop continue`
 ```
 
@@ -112,8 +134,18 @@ To address findings: `/agentic-develop continue`
 
 Do NOT flag:
 
-- Pre-existing issues not in the current diff
-- Style preferences not in CLAUDE.md or conventions skill
+- Style preferences not codified in agent instruction files
+  (CLAUDE.md, AGENTS.md, or equivalent) or the conventions skill
 - Issues linters or type checkers catch automatically
 - Runtime-dependent speculative issues
 - Explicitly suppressed issues (ignore comments)
+- Pre-existing Warning- or Suggestion-severity issues outside the
+  current diff
+
+### Pre-existing Critical Findings
+
+Do flag pre-existing **Critical**-severity issues that the current
+work naturally surfaces in adjacent code. Tag them `[pre-existing]`
+next to the file:line reference so the reader sees the scope
+immediately. Do not expand the net to hunt — only report what the
+diff puts in front of you.

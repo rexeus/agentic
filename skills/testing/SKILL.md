@@ -1,7 +1,7 @@
 ---
 name: testing
 description: Provides testing philosophy, patterns, and strategies. Applied when writing tests, assessing coverage, or designing test architectures.
-user-invokable: false
+user-invocable: false
 ---
 
 # Testing Patterns

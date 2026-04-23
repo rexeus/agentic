@@ -6,13 +6,13 @@ argument-hint: "[--base <branch>] [--staged]"
 
 # Verify
 
-Pre-ship quality gate. Deploys three parallel agents to answer one question:
+Pre-ship quality gate. Deploys four parallel agents to answer one question:
 **are these changes ready to ship?**
 
 **When to use this vs `/agentic:review`:**
 Use **verify** as the final check before committing or creating a PR — it runs
-correctness review, complexity analysis, AND tests together. Use **review** for
-a focused code review without running tests or checking complexity.
+the full reviewer trio _and_ tests together. Use **review** for a focused code
+review that stops short of running or writing tests.
 
 **Usage:**
 
@@ -22,20 +22,24 @@ a focused code review without running tests or checking complexity.
 
 ## What It Checks
 
-Three agents run in parallel, each with a different lens:
+Four agents run in parallel, each a distinct specialist with its own lens:
 
-| Agent                      | Focus                                                         | Mode            |
-| -------------------------- | ------------------------------------------------------------- | --------------- |
-| **Reviewer** (correctness) | Bugs, security, conventions                                   | Read-only       |
-| **Reviewer** (complexity)  | Simplification opportunities, over-engineering, readability   | Read-only       |
-| **Tester**                 | Run existing tests — or write tests if none cover the changes | Write or Assess |
+| Agent                        | Focus                                                         | Mode            |
+| ---------------------------- | ------------------------------------------------------------- | --------------- |
+| **reviewer-correctness**     | Logic, concurrency, error handling, edge cases                | Read-only       |
+| **reviewer-security**        | Injection, AuthN/AuthZ, secrets, input validation, exposure   | Read-only       |
+| **reviewer-maintainability** | Naming, conventions, complexity, coupling, readability        | Read-only       |
+| **tester**                   | Run existing tests — or write tests if none cover the changes | Write or Assess |
 
 ## Rules
 
 - **Never modify source code.** This command verifies. It does not fix.
   The tester may create test files, but source code is untouched.
-- **Never skip agents.** All three run, every time. A partial quality gate
-  is a false quality gate.
+- **Never skip agents.** All four run, every time. A partial quality gate
+  is a false quality gate. If a lens does not apply to the diff (e.g.,
+  a pure-internal refactor with no trust boundary touched), the
+  specialist still runs and returns a short PASS — the fact that it
+  looked and found nothing is itself evidence.
 - **Present findings honestly.** Don't soften blocking issues. Don't inflate
   advisory notes. Signal over noise.
 
@@ -95,23 +99,35 @@ Read the full diff. Identify:
 
 ### Step 3: Deploy Agents
 
-Launch all three in parallel. Brief each precisely:
+Launch all four in parallel. Brief each precisely. Each reviewer is a
+distinct specialist — do not fan out a single briefing with differing
+"focus" overrides.
 
-**Reviewer 1 — Correctness:**
-
-> Scope: <changed files>. Diff baseline: <base branch or staged>.
-> Context: <summary of what changed and why, derived from commits>.
-> **Focus: correctness, security, and convention adherence.**
-> Ignore complexity and style preferences — the other reviewer handles that.
-
-**Reviewer 2 — Complexity:**
+**`reviewer-correctness`:**
 
 > Scope: <changed files>. Diff baseline: <base branch or staged>.
 > Context: <summary of what changed and why, derived from commits>.
-> **Focus: complexity and simplification opportunities.** Flag:
-> over-engineering, unnecessary abstractions, functions that do too much,
-> deep nesting, code that could be simpler without losing clarity.
-> Do NOT flag style preferences. Only flag genuine complexity.
+> Focus areas (optional): <specific correctness concerns suggested by
+> the diff, e.g., "concurrency on shared state introduced at <file>",
+> "new error path in <handler>">.
+
+**`reviewer-security`:**
+
+> Scope: <changed files>. Diff baseline: <base branch or staged>.
+> Context: <summary of what changed and why, derived from commits>.
+> Trust boundaries: <untrusted inputs that cross into this diff:
+> public HTTP, user input, filesystem, env vars, message queues — or
+> "none identified in this diff" if the change is internal>.
+> Deployment context: <public vs internal, multi-tenant vs
+> single-tenant, known data sensitivity — or "unknown" if not
+> determinable from the repo>.
+
+**`reviewer-maintainability`:**
+
+> Scope: <changed files>. Diff baseline: <base branch or staged>.
+> Context: <summary of what changed and why, derived from commits>.
+> The agent reads CLAUDE.md and neighboring code itself; do not
+> pre-summarize project conventions.
 
 **Tester:**
 
@@ -129,30 +145,40 @@ Determine mode based on test coverage:
 
 ### Step 4: Synthesize Results
 
-When all three agents return:
+When all four agents return:
 
-1. **Deduplicate** — If both reviewers flag the same issue, report it once
-   with the higher severity.
+1. **Preserve the lens label.** Every reviewer finding carries its
+   lens tag (`[correctness]`, `[security]`, `[maintainability]`) so
+   the human can see which specialist flagged what.
 
-2. **Categorize findings:**
-   - **Blocking** — Bugs, security issues, test failures. Must fix before shipping.
-   - **Warning** — Significant concerns. Should fix, but not necessarily now.
+2. **Deduplicate only at the intersection.** Two reviewers flagging
+   literally the same line for literally the same reason collapse into
+   one finding tagged with both lenses. Two reviewers seeing related
+   issues from their own angles remain separate findings — do not
+   compress away the perspective.
+
+3. **Categorize findings:**
+   - **Blocking** — Critical findings from any reviewer, or test
+     failures. Must fix before shipping.
+   - **Warning** — Significant concerns from any reviewer. Should fix,
+     but not necessarily now.
    - **Advisory** — Suggestions, minor improvements. Nice to fix.
 
-3. **Produce the Quality Report:**
+4. **Produce the Quality Report:**
 
 ```markdown
 ## Quality Report: <scope description>
 
 **Verdict:** PASS | FAIL | CONDITIONAL
+**Lens verdicts:** correctness: <...> | security: <...> | maintainability: <...>
 
 ### Blocking
 
-- <findings that must be fixed — empty if none>
+- <findings that must be fixed — empty if none, lens labels preserved>
 
 ### Warnings
 
-- <findings that should be fixed — empty if none>
+- <findings that should be fixed — empty if none, lens labels preserved>
 
 ### Advisory
 
@@ -160,7 +186,7 @@ When all three agents return:
 
 ### Simplification Opportunities
 
-- <complexity reviewer's findings — empty if code is clean>
+- <maintainability findings tagged as complexity — empty if code is clean>
 
 ### Test Results
 
@@ -170,15 +196,19 @@ When all three agents return:
 
 ### Verdict Reasoning
 
-<1-2 sentences explaining the verdict>
+<1-2 sentences explaining the verdict, naming which lens drove it>
 ```
 
 ### Step 5: Verdict
 
-- **PASS** — No blocking findings. Tests green. Ship it.
-- **FAIL** — Blocking findings or test failures. List what needs fixing.
-- **CONDITIONAL** — Warnings only, no blockers. Present findings and let
-  the user decide.
+The composite verdict is the **worst** across the three lens verdicts
+and the test result — one FAIL anywhere fails the gate.
+
+- **PASS** — All three lenses PASS and tests are green. Ship it.
+- **FAIL** — Any lens FAIL, or test failures. List what needs fixing
+  with its lens label intact.
+- **CONDITIONAL** — Warnings only, no blockers, tests green. Present
+  findings and let the user decide.
 
 ### Step 6: Suggest Next Steps
 

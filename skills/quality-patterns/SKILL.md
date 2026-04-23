@@ -1,7 +1,7 @@
 ---
 name: quality-patterns
 description: Identifies code quality anti-patterns and provides best practices. Applied when analyzing code smells, architecture decisions, complexity, or technical debt.
-user-invokable: false
+user-invocable: false
 ---
 
 # Quality Patterns & Anti-Patterns

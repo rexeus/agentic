@@ -18,18 +18,24 @@ coding session.
 
 ## The Agents
 
-Seven cognitive modes, one orchestrator. Each answers a different question:
+Nine cognitive modes, one orchestrator. Each answers a different question:
 
-| Agent     | Question                     | Mode       |
-| --------- | ---------------------------- | ---------- |
-| scout     | "What is here?"              | Explore    |
-| analyst   | "How does this work?"        | Understand |
-| architect | "How should it be?"          | Design     |
-| developer | "Here's the implementation." | Build      |
-| reviewer  | "Is this correct?"           | Verify     |
-| tester    | "Does it actually work?"     | Prove      |
-| refiner   | "How can this be simpler?"   | Simplify   |
-| lead      | Orchestrates all above       | Coordinate |
+| Agent                    | Question                     | Mode       |
+| ------------------------ | ---------------------------- | ---------- |
+| scout                    | "What is here?"              | Explore    |
+| analyst                  | "How does this work?"        | Understand |
+| architect                | "How should it be?"          | Design     |
+| developer                | "Here's the implementation." | Build      |
+| reviewer-correctness     | "Does it work?"              | Verify     |
+| reviewer-security        | "Can it be broken?"          | Verify     |
+| reviewer-maintainability | "Will it age well?"          | Verify     |
+| tester                   | "Does it actually work?"     | Prove      |
+| refiner                  | "How can this be simpler?"   | Simplify   |
+| lead                     | Orchestrates all above       | Coordinate |
+
+The three reviewers run in parallel after the developer finishes, each
+through its own lens with its own loaded skills. One FAIL anywhere
+fails the review.
 
 ## Principles
 

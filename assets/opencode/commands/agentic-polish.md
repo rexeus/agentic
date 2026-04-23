@@ -149,13 +149,18 @@ If the scope is large, check in with the user between groups.
 
 Launch in parallel:
 
-**reviewer** — Check that the changes are consistent with the approved pattern
-and don't introduce bugs. Compare modified files against the Pattern Catalog.
+**reviewer-correctness** — Confirm the changes don't introduce bugs,
+regressions, or behavior drift.
+
+**reviewer-maintainability** — Confirm the changes are consistent with
+the approved Pattern Catalog. This is the primary reviewer for polish
+work — it owns the lens that polish is optimizing for.
 
 **tester** — Confirm all tests pass and no behavior changed.
 
-If the reviewer finds regressions toward inconsistency, send the developer
-back with specific findings. Re-verify after fixes.
+If any reviewer finds regressions toward inconsistency or correctness
+issues, send the developer back with the lens-labeled findings. Re-verify
+after fixes — only re-deploy the reviewer(s) whose lens flagged issues.
 
 ### Step 7: Convergence Report
 

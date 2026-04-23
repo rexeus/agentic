@@ -67,9 +67,10 @@ and follows up with review and tests. You get working, tested code — not a pla
 about a plan.
 
 **3. Review.** `/agentic-review` (OpenCode) or `/agentic:review` (Claude Code)
-deploys parallel reviewers with different
-focus areas — correctness, security, conventions. Each reviewer works
-independently for unbiased analysis. High-confidence findings only.
+deploys three specialist reviewers in parallel — one for correctness,
+one for security, one for maintainability — each with its own identity
+and its own loaded skills. High-confidence findings only, lens labels
+preserved.
 
 **4. Simplify.** `/agentic-simplify` (OpenCode) or `/agentic:simplify` (Claude Code)
 is where the craft happens. The Refiner

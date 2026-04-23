@@ -30,9 +30,13 @@ concrete step. Example:
 1. "Scout the relevant modules" — scout (skip if already done)
 2. "Design implementation approach" — architect (skip if plan exists)
 3. "Implement feature X" — developer
-4. "Review implementation" — reviewer
-5. "Write and run tests" — tester
-6. "Refine if needed" — refiner (optional)
+4. "Review for correctness" — reviewer-correctness
+5. "Review for security" — reviewer-security
+6. "Review for maintainability" — reviewer-maintainability
+7. "Write and run tests" — tester
+8. "Refine if needed" — refiner (optional)
+
+Steps 4–7 run in parallel.
 
 Mark tasks `in_progress` as you start them and `completed` when done.
 Skip tasks that were already covered by a prior `/agentic:plan` run.
@@ -102,13 +106,19 @@ The developer implements incrementally. After each logical unit:
 
 ### Step 5: Verify
 
-Launch in parallel:
+Launch four agents in parallel — the reviewer trio plus the tester:
 
-**reviewer** — Analyze the implementation for:
+**reviewer-correctness** — Logic, concurrency, error handling, edge
+cases, plan alignment. Confidence-scored findings (threshold 80).
 
-- Correctness, security, convention adherence
-- Alignment with the architecture plan
-- Confidence-scored findings (threshold 80)
+**reviewer-security** — Injection, AuthN/AuthZ, secrets, input
+validation at trust boundaries, data exposure. Confidence-scored
+findings (threshold 80). Include Trust boundaries and Deployment
+context in the briefing when determinable from the diff.
+
+**reviewer-maintainability** — Naming, conventions, complexity,
+cohesion, coupling, readability, abstraction fit. Confidence-scored
+findings (threshold 80).
 
 **tester** — Write and run tests for:
 
@@ -118,29 +128,33 @@ Launch in parallel:
 
 ### Step 6: Iterate
 
-If the reviewer or tester found issues:
+If any reviewer or the tester found issues:
 
-1. Summarize all findings for the user
+1. Summarize findings across all lenses for the user, preserving the
+   lens label on each finding
 2. Ask whether to fix now or note for later
-3. If fixing: send the developer back with specific findings
-4. Re-run verification after fixes
+3. If fixing: send the developer back with the consolidated findings
+   transformed into concrete instructions
+4. Re-run verification after fixes — only re-deploy the reviewer(s)
+   whose lens flagged issues
 
-Repeat until the reviewer passes and tests are green,
-or the user decides to stop.
+Repeat until every reviewer passes and tests are green, or the user
+decides to stop.
 
 ### Step 7: Refine (optional)
 
-If the reviewer flagged complexity, deep nesting, or convoluted logic
-(severity Warning or above), or if the user requests simplification:
+If `reviewer-maintainability` flagged complexity, deep nesting, or
+convoluted logic (severity Warning or above), or if the user requests
+simplification:
 
 1. Ask the user whether to simplify before committing
-2. If yes: deploy the **refiner** with the reviewer's findings and the
-   current file list
+2. If yes: deploy the **refiner** with the maintainability findings and
+   the current file list
 3. The refiner simplifies incrementally, verifying tests after each change
 4. Re-run the **tester** to confirm nothing broke
 
-Skip this step if the code is already clean and the reviewer had no
-complexity-related findings.
+Skip this step if the code is already clean and the maintainability
+reviewer had no complexity-related findings.
 
 ### Step 8: Summary
 

@@ -15,7 +15,9 @@ export const AGENT_FILES = [
   "analyst.md",
   "architect.md",
   "developer.md",
-  "reviewer.md",
+  "reviewer-correctness.md",
+  "reviewer-security.md",
+  "reviewer-maintainability.md",
   "tester.md",
   "refiner.md",
 ];
@@ -24,6 +26,7 @@ export const SKILL_NAMES = [
   "conventions",
   "git-conventions",
   "quality-patterns",
+  "review-foundations",
   "security",
   "setup",
   "testing",

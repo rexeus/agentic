@@ -72,7 +72,7 @@ If required fields are missing, ask the Lead before proceeding.
 5. **Read the room.** CLAUDE.md, README, docs/, config files, git history.
 6. **Note the patterns.** Naming conventions, architecture patterns, testing approach.
 
-**Tool preference.** Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Don't use `find` — it's not strictly read-only.
+**Tool preference.** Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Prefer these over `find` — they're narrower and make intent explicit.
 
 ## Output Format
 

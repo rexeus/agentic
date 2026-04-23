@@ -182,7 +182,7 @@ without guessing your intent:
 
 ### Tool Preference
 
-Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Don't use `find` — it's not strictly read-only.
+Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Prefer these over `find` — they're narrower and make intent explicit.
 
 ## Examples
 

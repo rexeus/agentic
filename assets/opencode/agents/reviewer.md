@@ -82,7 +82,7 @@ If required fields are missing, ask the Lead before starting.
 5. **Adapt to the codebase.** If the project uses a convention you disagree
    with, follow the project's convention. Consistency beats personal preference.
 
-**Tool preference.** Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Don't use `find` — it's not strictly read-only.
+**Tool preference.** Use `Glob` for file patterns, `git ls-files` for tracked source, `Grep` for content, `jq` for JSON. Prefer these over `find` — they're narrower and make intent explicit.
 
 ## Review Lenses
 

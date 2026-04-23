@@ -18,24 +18,29 @@ coding session.
 
 ## The Agents
 
-Nine cognitive modes, one orchestrator. Each answers a different question:
+Ten cognitive modes, one orchestrator. Each answers a different question:
 
-| Agent                    | Question                     | Mode       |
-| ------------------------ | ---------------------------- | ---------- |
-| scout                    | "What is here?"              | Explore    |
-| analyst                  | "How does this work?"        | Understand |
-| architect                | "How should it be?"          | Design     |
-| developer                | "Here's the implementation." | Build      |
-| reviewer-correctness     | "Does it work?"              | Verify     |
-| reviewer-security        | "Can it be broken?"          | Verify     |
-| reviewer-maintainability | "Will it age well?"          | Verify     |
-| tester                   | "Does it actually work?"     | Prove      |
-| refiner                  | "How can this be simpler?"   | Simplify   |
-| lead                     | Orchestrates all above       | Coordinate |
+| Agent                    | Question                              | Mode       |
+| ------------------------ | ------------------------------------- | ---------- |
+| scout                    | "What is here?"                       | Explore    |
+| analyst                  | "How does this work?"                 | Understand |
+| architect                | "How should it be?"                   | Design     |
+| developer                | "Here's the code and the tests."      | Build      |
+| reviewer-correctness     | "Does it work?"                       | Verify     |
+| reviewer-security        | "Can it be broken?"                   | Verify     |
+| reviewer-maintainability | "Will it age well?"                   | Verify     |
+| tester-scout             | "What is not yet tested?"             | Prove      |
+| tester-artisan           | "Do the tests read well?"             | Prove      |
+| tester-architect         | "Is the code testable?"               | Prove      |
+| refiner                  | "How can this be simpler?"            | Simplify   |
+| lead                     | Orchestrates all above                | Coordinate |
 
-The three reviewers run in parallel after the developer finishes, each
-through its own lens with its own loaded skills. One FAIL anywhere
-fails the review.
+After the developer finishes implementation — **including the tests
+they write alongside the code** — the reviewer trio (correctness /
+security / maintainability) and the tester trio (coverage / craft /
+testability) run in parallel: six disjoint lenses on the same change.
+All six are advisory; only the developer writes code and tests. One
+FAIL anywhere fails the review.
 
 ## Principles
 

@@ -67,10 +67,11 @@ and follows up with review and tests. You get working, tested code — not a pla
 about a plan.
 
 **3. Review.** `/agentic-review` (OpenCode) or `/agentic:review` (Claude Code)
-deploys three specialist reviewers in parallel — one for correctness,
-one for security, one for maintainability — each with its own identity
-and its own loaded skills. High-confidence findings only, lens labels
-preserved.
+deploys **six specialists in parallel**: three reviewers (correctness,
+security, maintainability) and three testers (coverage, craft,
+testability). Each has its own identity and its own loaded skills.
+All six are advisory — none of them modifies files. High-confidence
+findings only, lens labels preserved.
 
 **4. Simplify.** `/agentic-simplify` (OpenCode) or `/agentic:simplify` (Claude Code)
 is where the craft happens. The Refiner
@@ -87,9 +88,10 @@ changes, then `/clear` and run it again. Each pass finds fewer
 issues until the codebase converges.
 
 **5. Verify.** `/agentic-verify` (OpenCode) or `/agentic:verify` (Claude Code)
-is the pre-ship quality gate. It runs
-correctness review, complexity analysis, and tests in parallel. One command,
-three perspectives, a clear verdict: PASS, FAIL, or CONDITIONAL.
+is the pre-ship quality gate. It runs the reviewer trio and the
+tester trio — six specialists in parallel — plus a full test-suite
+execution. One command, six perspectives, a clear verdict: PASS,
+FAIL, or CONDITIONAL.
 
 **6. Commit & PR.** `/agentic-commit` + `/agentic-pr` (OpenCode) or
 `/agentic:commit` + `/agentic:pr` (Claude Code) handle commit and PR flow.

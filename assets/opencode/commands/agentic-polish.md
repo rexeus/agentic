@@ -156,11 +156,22 @@ regressions, or behavior drift.
 the approved Pattern Catalog. This is the primary reviewer for polish
 work — it owns the lens that polish is optimizing for.
 
-**tester** — Confirm all tests pass and no behavior changed.
+**tester-artisan** — Confirm the tests still read well after the
+harmonization; rename/split/delete specifications if the polish
+exposed craft issues.
 
-If any reviewer finds regressions toward inconsistency or correctness
-issues, send the developer back with the lens-labeled findings. Re-verify
-after fixes — only re-deploy the reviewer(s) whose lens flagged issues.
+**tester-architect** — Confirm the polish did not introduce
+testability regressions (e.g., by pushing state into a singleton for
+"consistency").
+
+Run the existing test suite. No new coverage work — polish preserves
+behavior, so tester-scout is not deployed here.
+
+If any specialist finds regressions toward inconsistency, correctness,
+or testability, send the developer back with the lens-labeled findings.
+The developer implements code fixes and any test rewrites the artisan
+specified. Re-verify after fixes — only re-deploy the specialist(s)
+whose lens flagged issues.
 
 ### Step 7: Convergence Report
 

@@ -56,10 +56,11 @@ If the diff is empty, report "Nothing to review." and stop.
 
 ### Step 3: Parallel Review
 
-Launch four agents in parallel — the three reviewer specialists plus a
-read-only tester — each with the full diff and context. Every reviewer
-is a distinct specialist with its own identity and loaded skills; the
-briefings share core fields and differ only where the lens demands it.
+Launch **six agents in parallel** — the reviewer trio plus the tester
+trio — each with the full diff and context. Every specialist is a
+distinct identity with its own loaded skills; briefings share core
+fields and differ only where the lens demands it. All six are advisory;
+none of them modifies files.
 
 **Agent 1: `reviewer-correctness`**
 Lens: logic errors, concurrency, error handling, edge cases, resource
@@ -78,25 +79,42 @@ endpoint vs internal tool, multi-tenant vs single-tenant).
 **Agent 3: `reviewer-maintainability`**
 Lens: naming, conventions, complexity, cohesion, coupling,
 readability, abstraction fit.
-Briefing: Scope, Diff baseline, Context. The agent reads CLAUDE.md and
+Briefing: Scope, Diff baseline, Context. The agent reads project
+agent instructions (CLAUDE.md, AGENTS.md, or equivalent) and
 neighboring code itself — do not pre-summarize project conventions.
 
-**Agent 4: `tester` (assessment mode)**
-Focus: Are the changes adequately tested? What edge cases are missing?
-Mode: Read-only assessment. Do NOT write tests — only assess and report
-gaps. This overrides the tester's default advisory scope only to the
-extent that no test files are produced for this specific use case.
+**Agent 4: `tester-scout`**
+Lens: behavioral coverage. What scenarios are still untested?
+Briefing: Files changed, Test command, Test framework, Dev notes
+(including the tests the developer wrote alongside the code).
 
-Each agent scores findings with confidence (0-100). Threshold: 80.
+**Agent 5: `tester-artisan`**
+Lens: test craft. Are the tests well-written, well-named, and DAMP?
+Briefing: same as tester-scout.
+
+**Agent 6: `tester-architect`**
+Lens: testability. Is the code structurally testable, or is the
+test pain rooted in a design defect?
+Briefing: same as tester-scout.
+
+Reviewer findings are scored with confidence (0-100), threshold 80.
+Tester findings are tagged Blocking or Advisory per the test-advisory
+format.
 
 ### Step 4: Synthesize
 
-Collect findings from all four agents. Preserve the lens label on every
-reviewer finding (`[correctness]`, `[security]`, `[maintainability]`)
-so the reader can see which specialist flagged what. Deduplicate only
-when two reviewers flag literally the same line for the same reason —
-when a finding genuinely sits at the intersection of two lenses,
-report it once with both lenses listed.
+Collect findings from all six agents. Preserve the lens label on every
+finding (`[correctness]`, `[security]`, `[maintainability]`,
+`[coverage]`, `[craft]`, `[testability]`) so the reader can see which
+specialist flagged what. Deduplicate only when two specialists flag
+literally the same line for the same reason — when a finding genuinely
+sits at the intersection of two lenses, report it once with both
+lenses listed.
+
+For the tester trio, produce a Master Test Advisory per the synthesis
+rules in the `test-advisory-format` skill: existing-test audit from
+tester-artisan (augmented), specifications from tester-scout (union),
+design concerns from tester-architect (primary).
 
 ### Step 5: Output
 
@@ -106,7 +124,9 @@ report it once with both lenses listed.
 **Scope:** <what was reviewed>
 **Files:** <count>
 **Findings:** <count> (<critical> critical, <warnings> warnings, <suggestions> suggestions)
-**Lens verdicts:** correctness: <PASS|FAIL|CONDITIONAL> | security: <...> | maintainability: <...>
+**Review verdicts:** correctness: <PASS|FAIL|CONDITIONAL> | security: <...> | maintainability: <...>
+**Test advisory:** execution: <PASS|FAIL|N/A> | quality: <CLEAN|CONCERNS|BLOCKING>
+  (coverage: <...> | craft: <...> | testability: <...>)
 
 ### Critical
 **[Critical | 95 | correctness]** `file:line` — description
@@ -119,14 +139,22 @@ Why: explanation
 ### Suggestions
 **[Suggestion | 82 | maintainability]** `file:line` — description
 
-### Test Coverage
-- Covered: <what's tested>
-- Gaps: <what's missing>
-- Recommended: <specific tests to add>
+### Master Test Advisory
+
+**Test Specifications** (<count> from tester-scout):
+- <behavior name> — <scope: unit|edge|regression|...>
+
+**Existing Test Audit** (<count> blocking, <count> advisory from tester-artisan):
+- `[Blocking | craft]` `file:line` — <principle violated>
+- `[Advisory | craft]` `file:line` — <principle violated>
+
+**Testability Concerns** (<count> from tester-architect):
+- `[Blocking | testability]` <refactor direction>
+- `[Advisory | testability]` <refactor direction>
 
 ---
-**Confidence threshold: 80.** Lower-confidence findings were excluded.
-**Composite verdict:** worst of the three lens verdicts.
+**Confidence threshold: 80.** Lower-confidence reviewer findings were excluded.
+**Composite verdict:** worst across review lenses and tester Quality.
 To address findings: `/agentic-develop continue`
 ```
 

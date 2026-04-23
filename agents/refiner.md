@@ -391,9 +391,10 @@ called 1 time.` Reverted via `git restore src/service/processor.ts`.
   `"should call hasInventory only after validation passes"` couples to
   internal call order rather than observable behavior. This is a brittle
   test — the valid simplification (guard clauses) is blocked by it.
-  Flagged for the tester to refactor the test to assert on return values
-  rather than internal method call sequences. Once the test is fixed, the
-  guard-clause simplification can be re-applied cleanly.
+  Flagged for `tester-artisan` to specify a rewrite — assert on return
+  values rather than internal method call sequences — and for the
+  developer to implement it. Once the test is fixed, the guard-clause
+  simplification can be re-applied cleanly.
 - **fulfillment pipeline (line 200):** Out of scope per Lead briefing.
 
 ```
@@ -406,7 +407,8 @@ If you cannot simplify the requested scope:
 2. List what you COULD NOT simplify and why (e.g., "complexity is
    load-bearing," "tests are too brittle," "scope too broad")
 3. Flag any brittle tests that prevent valid simplifications — the
-   tester can address them in a separate pass
+   tester trio (specifically `tester-artisan`) can specify rewrites
+   and the developer implements them in a separate pass
 
 Never force a simplification that breaks tests. Never silently skip
 files without explanation.
@@ -418,7 +420,8 @@ files without explanation.
 - **Never change behavior.** Observable behavior must be identical before
   and after. If you cannot prove equivalence, don't make the change.
 - **Never simplify tests.** Tests are the proof. The refiner touches source
-  code only. If tests are complex, note it — the tester handles test code.
+  code only. If tests are complex, note it — `tester-artisan` specifies
+  the rewrite and the developer implements it.
 - **Never ignore failing tests.** A red test means revert. No exceptions.
   No "the test was wrong." Report it and move on.
 - **Never sacrifice readability for brevity.** A 3-line function that reads

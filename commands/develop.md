@@ -29,14 +29,16 @@ concrete step. Example:
 
 1. "Scout the relevant modules" — scout (skip if already done)
 2. "Design implementation approach" — architect (skip if plan exists)
-3. "Implement feature X" — developer
+3. "Implement feature X and its tests" — developer
 4. "Review for correctness" — reviewer-correctness
 5. "Review for security" — reviewer-security
 6. "Review for maintainability" — reviewer-maintainability
-7. "Write and run tests" — tester
-8. "Refine if needed" — refiner (optional)
+7. "Audit test coverage" — tester-scout
+8. "Audit test craft" — tester-artisan
+9. "Audit testability" — tester-architect
+10. "Refine if needed" — refiner (optional)
 
-Steps 4–7 run in parallel.
+Steps 4–9 run in parallel.
 
 Mark tasks `in_progress` as you start them and `completed` when done.
 Skip tasks that were already covered by a prior `/agentic:plan` run.
@@ -102,11 +104,15 @@ plan instead of code.
 The developer implements incrementally. After each logical unit:
 
 - Verify the code compiles/parses
+- **Write the tests for that unit in the same step** — the developer
+  is the sole author of tests (the tester specialists are advisory,
+  never write code)
 - Run existing tests to catch regressions
 
 ### Step 5: Verify
 
-Launch four agents in parallel — the reviewer trio plus the tester:
+Launch **six agents in parallel** — the reviewer trio + the tester
+trio. All six are advisory; none of them modifies files.
 
 **reviewer-correctness** — Logic, concurrency, error handling, edge
 cases, plan alignment. Confidence-scored findings (threshold 80).
@@ -120,25 +126,43 @@ context in the briefing when determinable from the diff.
 cohesion, coupling, readability, abstraction fit. Confidence-scored
 findings (threshold 80).
 
-**tester** — Write and run tests for:
+**tester-scout** — Behavioral coverage audit. Identifies scenarios
+the developer's tests missed: boundaries, state transitions,
+regressions, concurrency. Produces Test Specifications the developer
+implements.
 
-- New functionality (unit tests)
-- Edge cases identified in the plan
-- Integration points
+**tester-artisan** — Test craft audit. Reviews the tests the
+developer wrote (and the pre-existing tests) for readability, naming,
+DAMP, helper design, and anti-patterns. Produces rename/split/delete
+recommendations.
+
+**tester-architect** — Testability audit. Asks whether the code is
+structurally testable. Flags coupling, mock coercion, and design
+smells visible through test pain. Can return BLOCKING when the
+architecture forces principle violations.
 
 ### Step 6: Iterate
 
-If any reviewer or the tester found issues:
+If any reviewer or any tester found issues:
 
-1. Summarize findings across all lenses for the user, preserving the
-   lens label on each finding
+1. Summarize findings across all six lenses for the user, preserving
+   the lens label on each finding
 2. Ask whether to fix now or note for later
-3. If fixing: send the developer back with the consolidated findings
-   transformed into concrete instructions
-4. Re-run verification after fixes — only re-deploy the reviewer(s)
+3. If fixing: send the developer back with the consolidated
+   findings and Master Test Advisory transformed into concrete
+   instructions. The developer implements both code fixes AND the
+   tester trio's test specifications — they are the sole author of
+   tests.
+4. Re-run verification after fixes — only re-deploy the specialist(s)
    whose lens flagged issues
 
-Repeat until every reviewer passes and tests are green, or the user
+**Special case: `tester-architect` BLOCKING.** When the testability
+verdict is BLOCKING, the code cannot be cleanly tested in its current
+shape. Route to the architect for a testability refactor before
+writing more tests. The developer implements the refactor, then Step 5
+re-runs on the refactored shape.
+
+Repeat until every specialist passes and tests are green, or the user
 decides to stop.
 
 ### Step 7: Refine (optional)
@@ -151,7 +175,8 @@ simplification:
 2. If yes: deploy the **refiner** with the maintainability findings and
    the current file list
 3. The refiner simplifies incrementally, verifying tests after each change
-4. Re-run the **tester** to confirm nothing broke
+4. Re-run **tester-artisan** and **tester-architect** to confirm the
+   simplification did not regress craft or testability
 
 Skip this step if the code is already clean and the maintainability
 reviewer had no complexity-related findings.

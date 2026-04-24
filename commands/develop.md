@@ -178,8 +178,8 @@ simplification:
 4. Re-run **tester-artisan** and **tester-architect** to confirm the
    simplification did not regress craft or testability
 
-Skip this step if the code is already clean and the maintainability
-reviewer had no complexity-related findings.
+Skip this step if the code is already clean and `reviewer-maintainability`
+had no complexity-related findings.
 
 ### Step 8: Summary
 

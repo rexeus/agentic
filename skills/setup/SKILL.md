@@ -1,11 +1,12 @@
 ---
 name: setup
 description: Getting started with Agentic — workflow, commands, and how the agent team works together.
+user-invocable: false
 ---
 
 # Getting Started with Agentic
 
-Agentic is a multi-agent development toolkit. Seven specialists, one
+Agentic is a multi-agent development toolkit. Ten specialists, one
 orchestrator (the Lead), zero configuration.
 
 In OpenCode, `lead` is installed as a visible primary agent. The specialists
@@ -41,8 +42,8 @@ Plan → Develop → Review → Simplify → Verify → Commit → PR
    scope, and produces a plan. You approve before anything is built.
 2. `/agentic-develop` (OpenCode) or `/agentic:develop` (Claude Code) — the Lead scouts the codebase, designs the approach,
    briefs the developer, and runs review + tests.
-3. `/agentic-review` (OpenCode) or `/agentic:review` (Claude Code) — independent parallel reviewers check correctness,
-   security, and conventions.
+3. `/agentic-review` (OpenCode) or `/agentic:review` (Claude Code) — six independent specialists fan out in parallel:
+   the reviewer trio (correctness, security, maintainability) and the tester trio (coverage, craft, testability).
 4. `/agentic-simplify` (OpenCode) or `/agentic:simplify` (Claude Code) — the Refiner removes unnecessary complexity while
    preserving behavior.
 
@@ -67,10 +68,19 @@ You don't deploy agents directly. The Lead does that based on your task:
 - **Scout** — fast reconnaissance, maps the codebase
 - **Analyst** — traces logic, follows data flows, explains mechanics
 - **Architect** — designs solutions, evaluates trade-offs
-- **Developer** — the only agent that writes source code
-- **Reviewer** — reviews for correctness and security (read-only)
-- **Tester** — writes and runs tests (test code only)
+- **Developer** — the only agent that writes source code and tests
+- **Reviewer (correctness)** — runtime behavior, edge cases, the crash path (read-only)
+- **Reviewer (security)** — attacker model, trust boundaries, OWASP (read-only)
+- **Reviewer (maintainability)** — complexity, coupling, readability (read-only)
+- **Tester (scout)** — coverage gaps, missing scenarios (advisory, no files)
+- **Tester (artisan)** — test craft, AAA structure, readability (advisory, no files)
+- **Tester (architect)** — testability, design-for-test, seams (advisory, no files)
 - **Refiner** — simplifies working code without changing behavior
+
+After the developer ships code and tests, the reviewer trio and the tester
+trio run in parallel — six disjoint lenses on the same change. All six are
+advisory; the developer remains the only author. One FAIL anywhere fails
+the gate.
 
 ## Customizing Models
 

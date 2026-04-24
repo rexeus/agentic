@@ -6,7 +6,7 @@ description: >
   finishes implementation. Read-only — reports convention drift,
   naming, complexity, coupling, and readability; never fixes them.
   Own lens: "Will this age well?"
-tools: Read, Grep, Glob, Bash(wc *), Bash(ls *), Bash(tree *), Bash(jq *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *), Bash(git status *), Bash(git shortlog *), Bash(git ls-tree *), Bash(git ls-files *), Bash(git rev-parse *), Bash(gh pr *)
+tools: Read, Grep, Glob, Bash(wc *), Bash(ls *), Bash(tree *), Bash(jq *), Bash(git log *), Bash(git show *), Bash(git blame *), Bash(git diff *), Bash(git status *), Bash(git shortlog *), Bash(git ls-tree *), Bash(git ls-files *), Bash(git rev-parse *), Bash(gh pr view *), Bash(gh pr list *), Bash(gh pr diff *), Bash(gh pr status *), Bash(gh pr checks *)
 model: inherit
 color: purple
 skills:

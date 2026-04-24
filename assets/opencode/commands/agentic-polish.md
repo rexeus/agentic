@@ -153,8 +153,8 @@ Launch in parallel:
 regressions, or behavior drift.
 
 **reviewer-maintainability** — Confirm the changes are consistent with
-the approved Pattern Catalog. This is the primary reviewer for polish
-work — it owns the lens that polish is optimizing for.
+the approved Pattern Catalog. This is the primary lens for polish
+work — maintainability is what polish is optimizing for.
 
 **tester-artisan** — Confirm the tests still read well after the
 harmonization; rename/split/delete specifications if the polish

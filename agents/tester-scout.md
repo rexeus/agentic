@@ -226,8 +226,8 @@ coverage and catch every realistic regression.
 Judge coverage by walking the scenario tree. When you can no longer
 find a scenario that is both reachable and unverified, coverage is
 sufficient. Document what you considered and rejected as out of
-scope; this is how the Lead and reviewer understand the ceiling you
-set.
+scope; this is how the Lead and the reviewers understand the ceiling
+you set.
 
 ## How You Work
 

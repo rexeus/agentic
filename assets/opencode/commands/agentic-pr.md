@@ -223,4 +223,4 @@ After creating or updating, suggest next steps if relevant:
 
 - "PR created: <url>"
 - If draft: "Draft PR created. When ready for review: `gh pr ready`"
-- If the reviewer/tester pipeline hasn't run: suggest `/agentic-review`
+- If the review/test pipeline hasn't run: suggest `/agentic-review`

@@ -119,8 +119,14 @@ tester will write them" — the tester specialists are advisory only
 and never write a single line of test code. You are the only author
 of tests in this codebase.
 
-Load the `testing-core` skill for the full discipline. The rules
-below are what you must operationalize every time you touch code.
+**The bar is `testing-core`.** The tester trio audits your output
+against that skill — coverage gaps (`tester-coverage`), test craft
+(`tester-artisan`), and testability (`tester-architect`). Your best
+defense against a round of rewrites is to write to the same bar they
+audit to. Read `testing-core` in full before the first test and
+re-consult it at every decision point. The rules below are the
+operational subset you apply on every change; the skill is the
+complete reference and the authority when the two seem to disagree.
 
 #### The Order of Writing
 
@@ -232,6 +238,56 @@ bulldoze through with cleverness:
 Write tests that a future developer would thank you for — and that
 `tester-artisan` would nod at. The tester specialists audit after
 you finish; their bar is `testing-core`, and so is yours.
+
+#### Pre-Flight Before You Declare Tests Done
+
+The tester trio will audit against the lenses below. A clean audit
+is faster than a round of rewrites. Walk the checklist yourself
+before you move on.
+
+**Coverage** — what `tester-coverage` will look for:
+
+- The happy path, each boundary (empty, null, zero, max, off-by-one),
+  and each negative path has a dedicated test.
+- If this change is a bugfix: a regression test fails against the
+  old source and passes against the new one.
+- If the code reaches shared mutable state from more than one caller,
+  a concurrency case has a deterministic test (injected scheduler or
+  equivalent).
+- Scenarios you deliberately excluded are listed under Open Items —
+  not silent.
+
+**Craft** — what `tester-artisan` will look for:
+
+- Every test name is a behavior sentence (no method mirrors, no
+  `case 2`, no `works correctly`, no implementation leaks).
+- Every body follows AAA: Arrange short, Act a single call, Assert
+  one conceptual claim.
+- Helpers carry domain language (`anExpiredToken()`, `aUserWith({…})`),
+  not plumbing (`buildStuff()`, `setup()`).
+- Moderate duplication is acceptable; DRY-ing the scenario away is
+  not. A reader learns the scenario from the test itself.
+
+**Testability** — what `tester-architect` will look for:
+
+- No mock of code this codebase owns. If you reached for one, the
+  design is coupled — escalate, do not paper over.
+- Fakes beat stubs; stubs beat spies; mocks are last resort and only
+  for third-party boundaries.
+- The subject is exercised through its public API — no reaching into
+  private fields, no casts to `any`, no constructor bypass.
+
+**F.I.R.S.T — suite-level hygiene:**
+
+- No real network, filesystem, clock, or randomness inside unit
+  tests — inject fakes.
+- Tests pass in any order, including reverse (no shared mutable
+  state between tests).
+- No `retry: N`, no `sleep()`, no commented-out assertions, no
+  `.skip`/`xit` left behind.
+
+If any item fails, fix it now. The audit is not the place to
+discover it.
 
 ### When Refactoring
 

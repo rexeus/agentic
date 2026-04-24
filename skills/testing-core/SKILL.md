@@ -226,6 +226,73 @@ Explicitly flag these when found. Never recommend them.
 - **Arrange blocks longer than Act plus Assert combined.** Helper is
   missing or the code under test has too many dependencies.
 
+## Snapshot Testing — When It's Right
+
+The Anti-Pattern Catalog flags "Snapshot tests for behavior." That
+call stands — and it is narrower than it sounds. Snapshots have a
+legitimate role; the craft is knowing which.
+
+**Decision procedure.** Before you write `toMatchSnapshot()` or
+`toMatchInlineSnapshot()`, answer yes to **all three**:
+
+1. **Is the tested value a string, or a structure whose serialized
+   form is itself the contract?** Schemas, HTML/SDL/SQL output, CLI
+   strings, generated code → yes. A domain object returned from a
+   service (`User`, `Order`, `Invoice`) → no, assert specific
+   fields instead.
+2. **Is the value byte-identical across runs?** No `new Date()`,
+   no `crypto.randomUUID()`, no `Math.random()`, no map-ordering
+   variance, no environment-dependent paths. If the value contains
+   any of these, either inject deterministic replacements
+   (fake clock, seeded ID generator) before the snapshot, or do not
+   snapshot.
+3. **Is the expected value ≤ 20 lines and readable inline?** A
+   long snapshot is unreviewable; the next diff will be accepted
+   without reading. If the value is bigger, pick narrower
+   assertions over a subset.
+
+Any **no** → do not snapshot. Use `expect(x.field).toBe(y)` on the
+specific fields that express the behavior. When all three are
+**yes**, continue with the guidance below.
+
+**Right uses:**
+
+- **Stable serialized artifacts.** JSON schemas, OpenAPI specs,
+  GraphQL SDLs, generated client SDKs, migration SQL. The artifact
+  _is_ the contract; a diff is a contract change; a human reads it.
+- **Pure rendering output.** A function maps `(props) => html`. The
+  html is the observable public surface. The snapshot captures it;
+  the PR reviewer reads the diff like a visual diff.
+- **CLI and formatted output.** `--help` text, error messages,
+  formatted reports. The string _is_ the observable contract.
+
+**Wrong uses:**
+
+- Business logic outcomes. Signing up a user should assert
+  `status === 'active'`, `passwordHash !== password`,
+  `issuedToken !== null` — not capture the whole user object as an
+  opaque blob.
+- Snapshots over ~20 lines. A long snapshot is review-blindness in a
+  wrapper; the next diff is accepted without reading.
+- Non-deterministic values: timestamps, UUIDs, random seeds, cache
+  keys. A snapshot containing `new Date().toISOString()` is a flaky
+  test by construction.
+
+**Discipline for the ones that are right:**
+
+- Prefer **inline snapshots** (`toMatchInlineSnapshot`) over external
+  `.snap` files. The expected value is visible in the test body,
+  where the reader already is.
+- Every snapshot diff on a PR is read, not accepted reflexively.
+  `--updateSnapshot` is a local debugging tool, never a CI reflex.
+- Strip non-determinism before capture. Inject a fake clock, freeze
+  IDs via a deterministic sequence, sort map keys — whatever the
+  artifact needs to be the same byte-for-byte across runs.
+
+A snapshot delegates assertion work to the PR reviewer. That is a
+legitimate exchange for stable artifacts; it is a failure mode for
+business behavior.
+
 ## Naming Convention
 
 Behavior-oriented names. The reader understands the scenario, the
@@ -389,6 +456,87 @@ const fakeClock = (frozenAt: string) => ({
 A fake that fits in twenty lines beats every other double. If your
 fake grows past that, the interface is too wide — narrow it.
 
+## Parameterized Tests (Table-Driven)
+
+When the same behavior needs to be verified across many inputs, a
+table is clearer than seven near-identical bodies. Parameterized
+tests are the right tool for boundary sweeps; they are a trap when
+they hide unrelated scenarios under one roof.
+
+**Decision procedure.** Before you write `it.each`, answer yes to
+**all three**:
+
+1. **Do all rows verify the same behavior, differing only in input
+   and expected output?** If the rows would have different test
+   names (`returns 401 on X`, `returns 403 on Y`) they are
+   different tests — do not collapse them.
+2. **Do all rows use the same setup** (same fakes, same fixtures,
+   same arrangement)? Rows that need bespoke setup belong to
+   separate tests or separate tables.
+3. **Can each row be read as a scenario on its own?** If the row
+   is `{ x: 5, y: 10, r: 15 }` and the reader cannot tell what
+   scenario it represents, add a `case` label column or do not
+   use a table.
+
+Any **no** → write separate `it(...)` tests. When all three are
+**yes**, continue with the guidance below.
+
+**When a table is right:**
+
+- **Boundary sweeps over one behavior.** `length('')`, `length('a')`,
+  `length('abc')`, `length('🌕')` all assert the same claim; only
+  the input differs. A `{ input, expected }` table communicates the
+  sweep at a glance.
+- **Truth tables.** Functions with a small, bounded input space
+  where the full matrix _is_ the specification: parser states,
+  validation rules, enum mappings.
+
+**When a table is wrong:**
+
+- **Different behaviors masquerading as rows.** Row 1 "returns 401
+  on expired token," Row 2 "returns 403 on wrong role," Row 3
+  "returns 500 on DB outage" — those are three tests. `it.each`
+  does not excuse mixing distinct scenarios. One row, one behavior.
+- **Rows that need bespoke setup.** If half the rows need a
+  different fake than the other half, you are writing two tables
+  in one. Split them.
+
+**DAMP compatibility.**
+
+Each row must be scenario-recognizable from the row alone. A reader
+looks at the row and knows the scenario without scrolling up.
+
+- Include a **scenario label column** when inputs do not speak for
+  themselves. `{ case: 'weekend', date: '2026-01-03', ... }` beats
+  `{ date: '2026-01-03', ... }` every time.
+- Interpolate the label into the test name so the runner output
+  reads as behavior: `'length of $case input is $expected'` beats
+  `'length 0 / 1 / 2'`.
+
+**Idiomatic shape (Vitest/Jest):**
+
+```ts
+it.each([
+  { case: "empty", input: "", expected: 0 },
+  { case: "single", input: "a", expected: 1 },
+  { case: "three", input: "abc", expected: 3 },
+  { case: "emoji", input: "🌕", expected: 1 },
+])("length of $case input is $expected", ({ input, expected }) => {
+  expect(count(input)).toBe(expected);
+});
+```
+
+**When a table wants to become a property test.** If you find
+yourself tempted to add a random-data generator to the rows, or if
+the honest table size passes fifty rows, the behavior has invariants,
+not cases. Move to Fast-Check (see Beyond the Core). One property
+claim replaces a hundred rows.
+
+**Parameterized rows never replace named examples.** The canonical
+happy path and the most load-bearing boundaries stay as named,
+readable tests adjacent to the table. The table covers the sweep;
+the named tests anchor the story.
+
 ## The Doubles Decision
 
 When you need to substitute a collaborator in a test, descend the
@@ -492,6 +640,132 @@ This is a signal, not a problem to push through with cleverness.
 - **Works sometimes but not always?** That is a flake — the bug is
   in the test or the code's determinism. Find it. Never retry around
   it.
+
+## Beyond the Core
+
+The core principles cover the tests this codebase will write 95% of
+the time. The remaining 5% — high-stakes correctness, cross-service
+boundaries, legacy hardening — benefit from techniques this section
+names. Apply them deliberately; do not sprinkle.
+
+### Property-Based Testing (Fast-Check)
+
+For code with invariants — "for all valid inputs, property X holds" —
+a property test replaces dozens of hand-enumerated cases with one
+universal claim.
+
+**When it fits:**
+
+- Parsers and serializers: `parse(serialize(x))` equals `x`.
+- Mathematical functions: `sort(xs).length === xs.length`,
+  `sort(sort(xs))` equals `sort(xs)`.
+- State machines: no input sequence drives the machine into an
+  invalid state.
+- Commutative, idempotent, or associative operations.
+
+**When it does not fit:** single-path features, UI behavior,
+orchestration code, anything without a named invariant.
+
+**Shape of a property:**
+
+```ts
+import fc from "fast-check";
+
+test("sort is idempotent", () => {
+  fc.assert(
+    fc.property(fc.array(fc.integer()), (xs) => {
+      expect(sort(sort(xs))).toEqual(sort(xs));
+    }),
+  );
+});
+```
+
+**Discipline:**
+
+- 100 runs per property in CI by default. More only when the property
+  is cheap and the code is critical (parsers, crypto primitives).
+- On failure, Fast-Check reports a **shrunk** counter-example and a
+  seed. Both go in the bug report; both become a regression test
+  with the specific input pinned, so the case is locked in even
+  after the property passes again.
+- Properties do not replace canonical named examples. Pair them: the
+  property gives breadth, the named tests give readability.
+
+### Mutation Testing (Stryker)
+
+Mutation testing mutates your source (flips `===` to `!==`, removes
+`if` guards, changes `+` to `-`) and re-runs your tests. A surviving
+mutant proves your tests did not actually verify what their names
+claimed — coverage illusion.
+
+**When it fits:**
+
+- Periodically on load-bearing modules — auth, billing, critical
+  business rules, state machines. Quarterly, or before major
+  releases. Never per-commit.
+- After a refactor round that changed internal structure: mutation
+  scores answer "did the tests really survive, or did I rename my
+  way into coverage illusion?"
+
+**Reading a mutation score:**
+
+- 90%+ is strong. 80%+ is acceptable. Below 60% on a critical
+  module means the tests are mostly assertion-free tautologies.
+- The percentage is secondary; **surviving mutants** are the
+  signal. Each survivor is either an assertion gap (strengthen the
+  test) or an unreachable branch the mutant reveals (remove the
+  branch).
+
+**When it does not fit:** per-commit CI (too slow), pure I/O
+orchestration (high noise from unkillable I/O mutants), frontend
+presentation layers.
+
+### Contract Testing (Pact / CDC)
+
+For service-to-service communication, mocking the provider locally
+produces confident-looking green tests that break on first deploy.
+Contract testing fixes this: the consumer specifies what it expects
+of the provider, and the provider verifies it can meet that
+expectation.
+
+**When it fits:**
+
+- Microservice or multi-repo systems where consumer and provider
+  deploy independently.
+- External API clients whose provider publishes a contract you want
+  to verify against.
+
+**When it does not fit:**
+
+- Monoliths and in-process modules — integration tests suffice.
+- Stable interfaces entirely within one codebase.
+
+**Pattern.** Consumer tests produce a Pact file describing expected
+interactions. Provider tests replay the Pact against the real
+provider. CI fails both sides when the contract drifts — the side
+that fails first is the side the drift came from.
+
+### End-to-End (Playwright / Cypress)
+
+E2E follows the same principles: behavior not implementation, real
+where possible, deterministic inputs. Apply them at the
+browser/session layer:
+
+- **Few** E2E tests — one per critical user journey. Resist the urge
+  to test every permutation at this layer; integration and unit
+  tests do that more reliably and ten times faster.
+- Every E2E is independent, deterministic, repeatable. Shared test
+  accounts, leaked fixtures, and un-isolated database state are the
+  three most common flakiness sources.
+- The **pyramid**: many unit, fewer integration, few E2E. The
+  **testing trophy** variant (more integration, fewer unit) is a
+  legitimate alternative — pick one per project and hold the line.
+  Mixing produces the worst of both: slow unit-equivalent work
+  redone at integration pace.
+
+E2E is not a substitute for the lower layers. If a unit test can
+prove a behavior, a unit test wins on speed, determinism, and
+locality of failure.
 
 ## Integration With the Tester Trio
 

@@ -18,7 +18,7 @@ export const AGENT_FILES = [
   "reviewer-correctness.md",
   "reviewer-security.md",
   "reviewer-maintainability.md",
-  "tester-scout.md",
+  "tester-coverage.md",
   "tester-artisan.md",
   "tester-architect.md",
   "refiner.md",

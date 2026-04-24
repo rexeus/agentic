@@ -33,7 +33,7 @@ concrete step. Example:
 4. "Review for correctness" — reviewer-correctness
 5. "Review for security" — reviewer-security
 6. "Review for maintainability" — reviewer-maintainability
-7. "Audit test coverage" — tester-scout
+7. "Audit test coverage" — tester-coverage
 8. "Audit test craft" — tester-artisan
 9. "Audit testability" — tester-architect
 10. "Refine if needed" — refiner (optional)
@@ -126,7 +126,7 @@ context in the briefing when determinable from the diff.
 cohesion, coupling, readability, abstraction fit. Confidence-scored
 findings (threshold 80).
 
-**tester-scout** — Behavioral coverage audit. Identifies scenarios
+**tester-coverage** — Behavioral coverage audit. Identifies scenarios
 the developer's tests missed: boundaries, state transitions,
 regressions, concurrency. Produces Test Specifications the developer
 implements.

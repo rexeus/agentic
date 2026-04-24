@@ -16,7 +16,7 @@ are needed, are implemented by the developer in a follow-up step.
 
 **When to use this vs `/agentic:review`:**
 Use **verify** as the final check before committing or creating a PR —
-it runs the full reviewer trio *and* the tester trio, including a
+it runs the full reviewer trio _and_ the tester trio, including a
 full test-suite execution. Use **review** for a focused code review
 that skips the test-craft and testability audits.
 
@@ -30,14 +30,14 @@ that skips the test-craft and testability audits.
 
 Six agents run in parallel, each a distinct specialist with its own lens:
 
-| Agent                        | Focus                                                         | Mode       |
-| ---------------------------- | ------------------------------------------------------------- | ---------- |
-| **reviewer-correctness**     | Logic, concurrency, error handling, edge cases                | Advisory   |
-| **reviewer-security**        | Injection, AuthN/AuthZ, secrets, input validation, exposure   | Advisory   |
-| **reviewer-maintainability** | Naming, conventions, complexity, coupling, readability        | Advisory   |
-| **tester-scout**             | Behavioral coverage, missing scenarios, regressions           | Advisory   |
-| **tester-artisan**           | Test craft: readability, naming, DAMP, helper design          | Advisory   |
-| **tester-architect**         | Testability, mock coercion, design smells through test pain   | Advisory   |
+| Agent                        | Focus                                                       | Mode     |
+| ---------------------------- | ----------------------------------------------------------- | -------- |
+| **reviewer-correctness**     | Logic, concurrency, error handling, edge cases              | Advisory |
+| **reviewer-security**        | Injection, AuthN/AuthZ, secrets, input validation, exposure | Advisory |
+| **reviewer-maintainability** | Naming, conventions, complexity, coupling, readability      | Advisory |
+| **tester-coverage**          | Behavioral coverage, missing scenarios, regressions         | Advisory |
+| **tester-artisan**           | Test craft: readability, naming, DAMP, helper design        | Advisory |
+| **tester-architect**         | Testability, mock coercion, design smells through test pain | Advisory |
 
 ## Rules
 
@@ -140,7 +140,7 @@ distinct identity — do not fan out a single briefing with differing
 > or equivalent) and neighboring code itself; do not pre-summarize
 > project conventions.
 
-**`tester-scout`:**
+**`tester-coverage`:**
 
 > Files changed: <list>. Test command: <from package.json or config>.
 > Test framework: <detected>.
@@ -192,7 +192,7 @@ When all six agents return:
 **Verdict:** PASS | FAIL | CONDITIONAL
 **Review verdicts:** correctness: <...> | security: <...> | maintainability: <...>
 **Test advisory:** execution: <PASS|FAIL|N/A> | quality: <CLEAN|CONCERNS|BLOCKING>
-  (coverage: <...> | craft: <...> | testability: <...>)
+(coverage: <...> | craft: <...> | testability: <...>)
 
 ### Blocking
 
@@ -212,7 +212,7 @@ When all six agents return:
 
 ### Master Test Advisory
 
-- **Test Specifications pending** — <count specs from tester-scout>
+- **Test Specifications pending** — <count specs from tester-coverage>
 - **Existing tests to rewrite/split/delete** — <count from tester-artisan>
 - **Testability refactors** — <count from tester-architect>
 - Raw test run: <count> passed, <count> failed

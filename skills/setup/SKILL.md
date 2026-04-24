@@ -6,7 +6,7 @@ user-invocable: false
 
 # Getting Started with Agentic
 
-Agentic is a multi-agent development toolkit. Ten specialists, one
+Agentic is a multi-agent development toolkit. Eleven specialists, one
 orchestrator (the Lead), zero configuration.
 
 In OpenCode, `lead` is installed as a visible primary agent. The specialists

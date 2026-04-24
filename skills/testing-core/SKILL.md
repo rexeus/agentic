@@ -1,6 +1,6 @@
 ---
 name: testing-core
-description: Core testing principles shared across the tester specialists (tester-scout, tester-artisan, tester-architect) and the developer agent. Defines what a good test is in this codebase. Loaded whenever a task involves writing, auditing, or specifying tests.
+description: Core testing principles shared across the tester specialists (tester-coverage, tester-artisan, tester-architect) and the developer agent. Defines what a good test is in this codebase. Loaded whenever a task involves writing, auditing, or specifying tests.
 user-invocable: false
 ---
 
@@ -136,12 +136,12 @@ If test configuration does not randomize order, recommend enabling it.
 ## Handling Legacy Code Without Tests
 
 When changed code (or its dependencies) has no tests and behavior is
-unclear, specify **characterization tests** (Feathers, *Working
-Effectively with Legacy Code*): tests that freeze current behavior,
+unclear, specify **characterization tests** (Feathers, _Working
+Effectively with Legacy Code_): tests that freeze current behavior,
 bugs and all, before refactoring. Mark them explicitly:
 
 - `describe` block named `characterization: current behavior, not
-  verified as correct`
+verified as correct`
 - Each test name suffixed `(characterization)`
 
 Open questions about intended behavior go into Trade-offs and Design
@@ -149,13 +149,13 @@ Concerns for product or architecture to resolve.
 
 ## Adapt the Style, Hold the Line on Substance
 
-Match the project's voice on *style*: naming shape (pick one from the
+Match the project's voice on _style_: naming shape (pick one from the
 Naming Convention section, be consistent), file layout, helper
 conventions, framework choices. Read agent instruction files (CLAUDE.md,
 AGENTS.md, or equivalent) and neighboring tests before proposing a
 shape.
 
-Do not match the project's voice on *substance*. A codebase full of
+Do not match the project's voice on _substance_. A codebase full of
 anti-patterns from the catalog below does not legitimize new tests
 that repeat them. Mocks of own code, assertions on call counts,
 shared mutable state between tests, uncontrolled time — these are
@@ -178,6 +178,13 @@ tests:
 - Keep the evidence and recommendation as concrete as any in-diff finding
 - Do NOT expand the net to hunt for pre-existing issues; only report
   what the current changes naturally surface
+
+**Scope of `[pre-existing]`.** The tag is valid only when the
+file:line sits **outside the current diff's added lines**. Tests the
+developer wrote, copied, or modified in this change are in-diff —
+never `[pre-existing]`, even when a similar anti-pattern exists
+elsewhere in the suite. A Blocking violation reproduced in new code
+is a standard Blocking finding, not a pre-existing one.
 
 Advisory-level pre-existing issues stay out of scope. The diff-focus
 discipline keeps advisories shippable; only Blocking severity earns
@@ -236,8 +243,8 @@ Shape options (pick one per project, be consistent):
 
 # How to Write Tests (Developer-facing)
 
-The principles above describe *what* a good test is. This section
-describes *how* to write one. It is aimed at the developer who is
+The principles above describe _what_ a good test is. This section
+describes _how_ to write one. It is aimed at the developer who is
 implementing a feature, a fix, or a refactor. The tester specialists
 load the same skill to audit your work against the same baseline —
 there is one source of truth, no gap between what is written and what
@@ -253,6 +260,7 @@ together, merged together.
 
 If you find yourself unable to write a test for a behavior, stop.
 Either:
+
 1. The design is not testable — raise it as a Trade-off for the
    architect and refactor. Do not mock own code to work around it.
 2. The behavior is ambiguous — resolve the open question with product
@@ -334,7 +342,7 @@ const aLoggedInSession = () =>
   aSessionWith({ user: anActiveUser(), lastActivity: now() });
 ```
 
-Each one encodes a scenario's *default* shape. Tests that need the
+Each one encodes a scenario's _default_ shape. Tests that need the
 canonical case use these directly; tests that vary one field use the
 Builder layer below.
 
@@ -351,8 +359,8 @@ const aUserWith = (overrides: Partial<User>): User => ({
 });
 
 // Use site:
-aUserWith({ age: 17 })
-aUserWith({ status: "suspended" })
+aUserWith({ age: 17 });
+aUserWith({ status: "suspended" });
 ```
 
 Builders extend object mothers for variation. They never replace the
@@ -390,7 +398,7 @@ ladder from the top. Stop at the first answer that works:
    in-process collaborator with no external I/O — just call it.
 2. **Can I write a fake?** Yes → write a fake. Twenty lines or less.
 3. **Do I need a stub?** Just canned responses, no call-inspection.
-4. **Do I need a spy?** Only when the *call itself* is the observable
+4. **Do I need a spy?** Only when the _call itself_ is the observable
    behavior (e.g., "did the audit log receive an entry?"). Use
    sparingly.
 5. **Do I need a mock?** Last resort. Only for third-party services
@@ -410,6 +418,7 @@ must tell the reader the scenario, the behavior, and the outcome
 without opening the body.
 
 Bad names you never write:
+
 - Method mirrors: `validate()`, `handles edge cases`
 - Implementation leaks: `calls repository.save once`
 - Vague affirmations: `works correctly`, `behaves as expected`
@@ -489,7 +498,7 @@ This is a signal, not a problem to push through with cleverness.
 After you finish writing code and tests, the Lead dispatches the
 tester trio (scout / artisan / architect). Their advisories cover:
 
-- **tester-scout:** scenarios you did not cover (new specifications)
+- **tester-coverage:** scenarios you did not cover (new specifications)
 - **tester-artisan:** craft issues in the tests you wrote (rewrite
   specifications)
 - **tester-architect:** testability problems in the code you wrote

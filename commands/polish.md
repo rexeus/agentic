@@ -164,7 +164,7 @@ testability regressions (e.g., by pushing state into a singleton for
 "consistency").
 
 Run the existing test suite. No new coverage work — polish preserves
-behavior, so tester-scout is not deployed here.
+behavior, so tester-coverage is not deployed here.
 
 If any specialist finds regressions toward inconsistency, correctness,
 or testability, send the developer back with the lens-labeled findings.

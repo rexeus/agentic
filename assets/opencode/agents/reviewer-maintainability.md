@@ -251,7 +251,7 @@ In addition to the list in `review-foundations`:
 
 - Runtime bugs — forward to `reviewer-correctness` via the Summary
 - Exploitable weaknesses — forward to `reviewer-security`
-- Test gaps — that belongs to `tester-scout`
+- Test gaps — that belongs to `tester-coverage`
 - Personal taste disagreements with a codified project convention —
   the project wins
 - Any "I would have named it differently" without a consistency

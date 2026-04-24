@@ -1,6 +1,6 @@
 ---
 name: test-advisory-format
-description: The Test Advisory output format used by all tester specialists (tester-scout, tester-artisan, tester-architect) and understood by the Lead for synthesis. Defines sections, severity tags, dual verdict, and the specification template. Loaded whenever a task produces or consumes a Test Advisory.
+description: The Test Advisory output format used by all tester specialists (tester-coverage, tester-artisan, tester-architect) and understood by the Lead for synthesis. Defines sections, severity tags, dual verdict, and the specification template. Loaded whenever a task produces or consumes a Test Advisory.
 user-invocable: false
 ---
 
@@ -171,7 +171,7 @@ top-level template, with one header addition:
 **Quality:** CLEAN | CONCERNS | BLOCKING
 
 **Synthesized from:**
-- tester-scout (<quality verdict>)
+- tester-coverage (<quality verdict>)
 - tester-artisan (<quality verdict>)
 - tester-architect (<quality verdict>)
 ```
@@ -185,11 +185,11 @@ Rules:
 - **Test Suite Status:** identical; take any.
 - **Existing Test Audit:** primarily from tester-artisan. Augment with
   coupling-rooted findings from tester-architect (cite architectural
-  cause) and coverage-rooted findings from tester-scout (tests claiming
+  cause) and coverage-rooted findings from tester-coverage (tests claiming
   to verify a behavior they do not actually verify). Deduplicate by
   `file:line`; when multiple specialists find the same test, merge
   into one entry with the combined principle list.
-- **Test Specifications:** primarily from tester-scout. Union with any
+- **Test Specifications:** primarily from tester-coverage. Union with any
   specs from the others that introduce a distinct behavior.
   Deduplicate by behavior; when two specialists specify the same
   behavior with different setup, prefer the specification that uses a

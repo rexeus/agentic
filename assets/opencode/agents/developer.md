@@ -300,7 +300,7 @@ When you finish, provide:
 - Quality concerns: <for reviewers>
 - Testability concerns: <for tester-architect — e.g., "had to use a
   mock here because X is instantiated internally">
-- Coverage gaps I could not reach: <for tester-scout>
+- Coverage gaps I could not reach: <for tester-coverage>
 
 ### Notes
 - <anything else the lead should know>

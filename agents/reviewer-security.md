@@ -257,7 +257,7 @@ In addition to the list in `review-foundations`:
   `reviewer-correctness` via the Summary
 - Code quality and readability concerns — forward to
   `reviewer-maintainability`
-- Test gaps — that belongs to `tester-scout`
+- Test gaps — that belongs to `tester-coverage`
 
 ## What You Never Do
 

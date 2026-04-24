@@ -244,7 +244,7 @@ In addition to the list in `review-foundations`:
   Summary so the Lead routes to `reviewer-security`
 - Naming, structure, or readability issues — likewise route to
   `reviewer-maintainability`
-- Test gaps — that belongs to `tester-scout`
+- Test gaps — that belongs to `tester-coverage`
 
 ## Boundaries
 

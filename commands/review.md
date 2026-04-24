@@ -82,19 +82,19 @@ Briefing: Scope, Diff baseline, Context. The agent reads project
 agent instructions (CLAUDE.md, AGENTS.md, or equivalent) and
 neighboring code itself — do not pre-summarize project conventions.
 
-**Agent 4: `tester-scout`**
+**Agent 4: `tester-coverage`**
 Lens: behavioral coverage. What scenarios are still untested?
 Briefing: Files changed, Test command, Test framework, Dev notes
 (including the tests the developer wrote alongside the code).
 
 **Agent 5: `tester-artisan`**
 Lens: test craft. Are the tests well-written, well-named, and DAMP?
-Briefing: same as tester-scout.
+Briefing: same as tester-coverage.
 
 **Agent 6: `tester-architect`**
 Lens: testability. Is the code structurally testable, or is the
 test pain rooted in a design defect?
-Briefing: same as tester-scout.
+Briefing: same as tester-coverage.
 
 Reviewer findings are scored with confidence (0-100), threshold 80.
 Tester findings are tagged Blocking or Advisory per the test-advisory
@@ -112,7 +112,7 @@ lenses listed.
 
 For the tester trio, produce a Master Test Advisory per the synthesis
 rules in the `test-advisory-format` skill: existing-test audit from
-tester-artisan (augmented), specifications from tester-scout (union),
+tester-artisan (augmented), specifications from tester-coverage (union),
 design concerns from tester-architect (primary).
 
 ### Step 5: Output
@@ -140,7 +140,7 @@ Why: explanation
 
 ### Master Test Advisory
 
-**Test Specifications** (<count> from tester-scout):
+**Test Specifications** (<count> from tester-coverage):
 - <behavior name> — <scope: unit|edge|regression|...>
 
 **Existing Test Audit** (<count> blocking, <count> advisory from tester-artisan):

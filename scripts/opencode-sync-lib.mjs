@@ -24,7 +24,7 @@ export const agentMap = [
   ["reviewer-correctness", "reviewer-correctness.md"],
   ["reviewer-security", "reviewer-security.md"],
   ["reviewer-maintainability", "reviewer-maintainability.md"],
-  ["tester-scout", "tester-scout.md"],
+  ["tester-coverage", "tester-coverage.md"],
   ["tester-artisan", "tester-artisan.md"],
   ["tester-architect", "tester-architect.md"],
   ["refiner", "refiner.md"],
@@ -45,7 +45,7 @@ const OPEN_CODE_AGENT_CONFIG = {
         "reviewer-correctness": "allow",
         "reviewer-security": "allow",
         "reviewer-maintainability": "allow",
-        "tester-scout": "allow",
+        "tester-coverage": "allow",
         "tester-artisan": "allow",
         "tester-architect": "allow",
         refiner: "allow",
@@ -251,7 +251,7 @@ const OPEN_CODE_AGENT_CONFIG = {
       },
     },
   },
-  "tester-scout": {
+  "tester-coverage": {
     mode: "subagent",
     hidden: true,
     color: "success",

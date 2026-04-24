@@ -87,7 +87,7 @@ Run the existing test suite, then deploy **tester-artisan** and
 - Test craft stayed intact (tester-artisan confirms no readability
   drift introduced by the simplification)
 
-`tester-scout` is not deployed for simplify — the refiner adds no
+`tester-coverage` is not deployed for simplify — the refiner adds no
 behavior, so coverage is unchanged by construction.
 
 If either tester finds regressions, send the refiner back to revert

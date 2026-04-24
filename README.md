@@ -1,6 +1,6 @@
 # @rexeus/agentic
 
-A multi-agent development toolkit for Claude Code and OpenCode. Ten specialized
+A multi-agent development toolkit for Claude Code and OpenCode. Eleven specialized
 agents, one orchestrator, zero complexity.
 
 ## Why
@@ -113,7 +113,7 @@ independently.
 
 ## The Agents
 
-Ten cognitive modes, one orchestrator. Each answers a different question:
+Eleven cognitive modes, one orchestrator. Each answers a different question:
 
 ```
 Scout                     → "What is here?"              Fast codebase reconnaissance
@@ -155,16 +155,16 @@ they catch most role drift.
 Skills are background knowledge that agents load automatically. They inform
 decisions without cluttering your workflow.
 
-| Skill                   | Purpose                                                    |
-| ----------------------- | ---------------------------------------------------------- |
-| `conventions`           | Code style, naming, structure, types, error handling       |
-| `quality-patterns`      | Anti-patterns, coupling, duplication, positive patterns    |
-| `security`              | Injection, auth, data exposure, input validation           |
-| `testing-core`          | Test philosophy, F.I.R.S.T, doubles, anti-patterns         |
-| `test-advisory-format`  | Master Test Advisory template used by the tester trio      |
-| `review-foundations`    | Confidence, severity, verdict, output shape for reviewers  |
-| `git-conventions`       | Conventional Commits, branch naming, PR descriptions       |
-| `setup`                 | Getting started with Agentic, workflow, and agent overview |
+| Skill                  | Purpose                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| `conventions`          | Code style, naming, structure, types, error handling       |
+| `quality-patterns`     | Anti-patterns, coupling, duplication, positive patterns    |
+| `security`             | Injection, auth, data exposure, input validation           |
+| `testing-core`         | Test philosophy, F.I.R.S.T, doubles, anti-patterns         |
+| `test-advisory-format` | Master Test Advisory template used by the tester trio      |
+| `review-foundations`   | Confidence, severity, verdict, output shape for reviewers  |
+| `git-conventions`      | Conventional Commits, branch naming, PR descriptions       |
+| `setup`                | Getting started with Agentic, workflow, and agent overview |
 
 Agentic is compatible with the [`skills` CLI](https://github.com/vercel-labs/skills).
 You can use it to update skills via `npx skills update` or install additional

@@ -202,6 +202,14 @@ see a Critical-severity issue in adjacent code:
 - Do NOT expand the net to hunt for pre-existing issues; only report
   what the current changes naturally surface
 
+**Scope of `[pre-existing]`.** The tag is valid only when the
+file:line sits **outside the current diff's added lines**. Code that
+the developer wrote, copy-pasted, or touched in this change is
+in-diff — never `[pre-existing]`, even when a similar pattern exists
+elsewhere in the file. Reproducing a bad pattern in new code does not
+launder it through the tag; if you see a Critical-severity issue in
+the added lines themselves, flag it without the tag.
+
 Warning- and Suggestion-severity pre-existing issues stay out of scope.
 The diff-focus discipline exists so reviews stay shippable — only
 Critical severity earns the expansion.

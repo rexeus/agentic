@@ -148,13 +148,29 @@ If the scope is large, check in with the user between groups.
 
 Launch in parallel:
 
-**reviewer** — Check that the changes are consistent with the approved pattern
-and don't introduce bugs. Compare modified files against the Pattern Catalog.
+**reviewer-correctness** — Confirm the changes don't introduce bugs,
+regressions, or behavior drift.
 
-**tester** — Confirm all tests pass and no behavior changed.
+**reviewer-maintainability** — Confirm the changes are consistent with
+the approved Pattern Catalog. This is the primary lens for polish
+work — maintainability is what polish is optimizing for.
 
-If the reviewer finds regressions toward inconsistency, send the developer
-back with specific findings. Re-verify after fixes.
+**tester-artisan** — Confirm the tests still read well after the
+harmonization; rename/split/delete specifications if the polish
+exposed craft issues.
+
+**tester-architect** — Confirm the polish did not introduce
+testability regressions (e.g., by pushing state into a singleton for
+"consistency").
+
+Run the existing test suite. No new coverage work — polish preserves
+behavior, so tester-coverage is not deployed here.
+
+If any specialist finds regressions toward inconsistency, correctness,
+or testability, send the developer back with the lens-labeled findings.
+The developer implements code fixes and any test rewrites the artisan
+specified. Re-verify after fixes — only re-deploy the specialist(s)
+whose lens flagged issues.
 
 ### Step 7: Convergence Report
 

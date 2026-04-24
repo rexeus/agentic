@@ -56,27 +56,65 @@ If the diff is empty, report "Nothing to review." and stop.
 
 ### Step 3: Parallel Review
 
-Launch 3 review agents in parallel, each with the full diff and context:
+Launch **six agents in parallel** — the reviewer trio plus the tester
+trio — each with the full diff and context. Every specialist is a
+distinct identity with its own loaded skills; briefings share core
+fields and differ only where the lens demands it. All six are advisory;
+none of them modifies files.
 
-**Agent 1: Correctness Review** (reviewer agent)
-Focus: Logic errors, bugs, null access, race conditions, missing error handling.
-Lens: Correctness + Security + Plan Alignment from the reviewer's review lenses.
+**Agent 1: `reviewer-correctness`**
+Lens: logic errors, concurrency, error handling, edge cases, resource
+lifecycle, plan alignment.
+Briefing: Scope, Diff baseline, Context. Add Focus areas only when a
+specific correctness concern applies (e.g., "concurrency on the
+counter", "failure path when upstream is unreachable").
 
-**Agent 2: Convention Review** (reviewer agent)
-Focus: Naming, structure, patterns, CLAUDE.md compliance, code style.
-Lens: Conventions + Quality Patterns from the reviewer's review lenses.
+**Agent 2: `reviewer-security`**
+Lens: injection, AuthN/AuthZ, secrets, input validation at trust
+boundaries, data exposure, SSRF/deserialization, crypto, supply chain.
+Briefing: Scope, Diff baseline, Context. Add Trust boundaries and
+Deployment context when identifiable from the diff or repo (public
+endpoint vs internal tool, multi-tenant vs single-tenant).
 
-**Agent 3: Test Coverage Assessment** (tester agent, assessment mode)
-Focus: Are the changes adequately tested? What edge cases are missing?
-Mode: Read-only assessment. Do NOT write tests — only assess and report gaps.
-This overrides the tester's default write mode for this specific use case.
+**Agent 3: `reviewer-maintainability`**
+Lens: naming, conventions, complexity, cohesion, coupling,
+readability, abstraction fit.
+Briefing: Scope, Diff baseline, Context. The agent reads project
+agent instructions (CLAUDE.md, AGENTS.md, or equivalent) and
+neighboring code itself — do not pre-summarize project conventions.
 
-Each agent scores findings with confidence (0-100). Threshold: 80.
+**Agent 4: `tester-coverage`**
+Lens: behavioral coverage. What scenarios are still untested?
+Briefing: Files changed, Test command, Test framework, Dev notes
+(including the tests the developer wrote alongside the code).
+
+**Agent 5: `tester-artisan`**
+Lens: test craft. Are the tests well-written, well-named, and DAMP?
+Briefing: same as tester-coverage.
+
+**Agent 6: `tester-architect`**
+Lens: testability. Is the code structurally testable, or is the
+test pain rooted in a design defect?
+Briefing: same as tester-coverage.
+
+Reviewer findings are scored with confidence (0-100), threshold 80.
+Tester findings are tagged Blocking or Advisory per the test-advisory
+format.
 
 ### Step 4: Synthesize
 
-Collect findings from all 3 agents. Deduplicate (same issue found by
-multiple agents counts once, with the highest confidence score).
+Collect findings from all six agents. Preserve the lens label on every
+finding (`[correctness]`, `[security]`, `[maintainability]`,
+`[coverage]`, `[craft]`, `[testability]`) so the reader can see which
+specialist flagged what. Deduplicate only when two specialists flag
+literally the same line for the same reason — when a finding genuinely
+sits at the intersection of two lenses, report it once with both
+lenses listed.
+
+For the tester trio, produce a Master Test Advisory per the synthesis
+rules in the `test-advisory-format` skill: existing-test audit from
+tester-artisan (augmented), specifications from tester-coverage (union),
+design concerns from tester-architect (primary).
 
 ### Step 5: Output
 
@@ -86,25 +124,37 @@ multiple agents counts once, with the highest confidence score).
 **Scope:** <what was reviewed>
 **Files:** <count>
 **Findings:** <count> (<critical> critical, <warnings> warnings, <suggestions> suggestions)
+**Review verdicts:** correctness: <PASS|FAIL|CONDITIONAL> | security: <...> | maintainability: <...>
+**Test advisory:** execution: <PASS|FAIL|N/A> | quality: <CLEAN|CONCERNS|BLOCKING>
+  (coverage: <...> | craft: <...> | testability: <...>)
 
 ### Critical
-**[Critical | 95]** `file:line` — description
+**[Critical | 95 | correctness]** `file:line` — description
 Why: explanation
 
 ### Warnings
-**[Warning | 85]** `file:line` — description
+**[Warning | 85 | security]** `file:line` — description
 Why: explanation
 
 ### Suggestions
-**[Suggestion | 82]** `file:line` — description
+**[Suggestion | 82 | maintainability]** `file:line` — description
 
-### Test Coverage
-- Covered: <what's tested>
-- Gaps: <what's missing>
-- Recommended: <specific tests to add>
+### Master Test Advisory
+
+**Test Specifications** (<count> from tester-coverage):
+- <behavior name> — <scope: unit|edge|regression|...>
+
+**Existing Test Audit** (<count> blocking, <count> advisory from tester-artisan):
+- `[Blocking | craft]` `file:line` — <principle violated>
+- `[Advisory | craft]` `file:line` — <principle violated>
+
+**Testability Concerns** (<count> from tester-architect):
+- `[Blocking | testability]` <refactor direction>
+- `[Advisory | testability]` <refactor direction>
 
 ---
-**Confidence threshold: 80.** Lower-confidence findings were excluded.
+**Confidence threshold: 80.** Lower-confidence reviewer findings were excluded.
+**Composite verdict:** worst across review lenses and tester Quality.
 To address findings: `/agentic-develop continue`
 ```
 
@@ -112,8 +162,18 @@ To address findings: `/agentic-develop continue`
 
 Do NOT flag:
 
-- Pre-existing issues not in the current diff
-- Style preferences not in CLAUDE.md or conventions skill
+- Style preferences not codified in agent instruction files
+  (CLAUDE.md, AGENTS.md, or equivalent) or the conventions skill
 - Issues linters or type checkers catch automatically
 - Runtime-dependent speculative issues
 - Explicitly suppressed issues (ignore comments)
+- Pre-existing Warning- or Suggestion-severity issues outside the
+  current diff
+
+### Pre-existing Critical Findings
+
+Do flag pre-existing **Critical**-severity issues that the current
+work naturally surfaces in adjacent code. Tag them `[pre-existing]`
+next to the file:line reference so the reader sees the scope
+immediately. Do not expand the net to hunt — only report what the
+diff puts in front of you.

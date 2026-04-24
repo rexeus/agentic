@@ -1,7 +1,7 @@
 ---
 name: security
 description: Identifies security vulnerabilities and provides secure coding patterns. Applied when reviewing code for injection, authentication, authorization, and data exposure risks.
-user-invokable: false
+user-invocable: false
 ---
 
 # Security Patterns

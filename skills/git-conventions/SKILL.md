@@ -1,7 +1,7 @@
 ---
 name: git-conventions
 description: Provides git workflow conventions including Conventional Commits, branch naming, and PR descriptions. Applied when committing, branching, or creating pull requests.
-user-invokable: false
+user-invocable: false
 ---
 
 # Git Conventions

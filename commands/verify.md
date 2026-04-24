@@ -1,18 +1,24 @@
 ---
-description: Run a multi-agent quality gate on current changes. Checks correctness, complexity, and tests in parallel.
+description: Run a multi-agent quality gate on current changes. Six specialists — three reviewers, three testers — run in parallel, all advisory. Are these changes ready to ship?
 allowed-tools: Read, Grep, Glob, Bash(git *), Bash(gh *), Bash(npm *), Bash(npx *), Bash(pnpm *), Bash(yarn *), Agent
 argument-hint: "[--base <branch>] [--staged]"
 ---
 
 # Verify
 
-Pre-ship quality gate. Deploys three parallel agents to answer one question:
-**are these changes ready to ship?**
+Pre-ship quality gate. Deploys **six parallel specialists** to answer
+one question: **are these changes ready to ship?**
+
+The six are three reviewers (correctness, security, maintainability)
+and three testers (coverage, craft, testability). All six are
+advisory — none of them modifies a file. Fixes and new tests, if any
+are needed, are implemented by the developer in a follow-up step.
 
 **When to use this vs `/agentic:review`:**
-Use **verify** as the final check before committing or creating a PR — it runs
-correctness review, complexity analysis, AND tests together. Use **review** for
-a focused code review without running tests or checking complexity.
+Use **verify** as the final check before committing or creating a PR —
+it runs the full reviewer trio _and_ the tester trio, including a
+full test-suite execution. Use **review** for a focused code review
+that skips the test-craft and testability audits.
 
 **Usage:**
 
@@ -22,22 +28,29 @@ a focused code review without running tests or checking complexity.
 
 ## What It Checks
 
-Three agents run in parallel, each with a different lens:
+Six agents run in parallel, each a distinct specialist with its own lens:
 
-| Agent                      | Focus                                                         | Mode            |
-| -------------------------- | ------------------------------------------------------------- | --------------- |
-| **Reviewer** (correctness) | Bugs, security, conventions                                   | Read-only       |
-| **Reviewer** (complexity)  | Simplification opportunities, over-engineering, readability   | Read-only       |
-| **Tester**                 | Run existing tests — or write tests if none cover the changes | Write or Assess |
+| Agent                        | Focus                                                       | Mode     |
+| ---------------------------- | ----------------------------------------------------------- | -------- |
+| **reviewer-correctness**     | Logic, concurrency, error handling, edge cases              | Advisory |
+| **reviewer-security**        | Injection, AuthN/AuthZ, secrets, input validation, exposure | Advisory |
+| **reviewer-maintainability** | Naming, conventions, complexity, coupling, readability      | Advisory |
+| **tester-coverage**          | Behavioral coverage, missing scenarios, regressions         | Advisory |
+| **tester-artisan**           | Test craft: readability, naming, DAMP, helper design        | Advisory |
+| **tester-architect**         | Testability, mock coercion, design smells through test pain | Advisory |
 
 ## Rules
 
-- **Never modify source code.** This command verifies. It does not fix.
-  The tester may create test files, but source code is untouched.
-- **Never skip agents.** All three run, every time. A partial quality gate
-  is a false quality gate.
-- **Present findings honestly.** Don't soften blocking issues. Don't inflate
-  advisory notes. Signal over noise.
+- **Never modify any file.** This command verifies. It does not fix.
+  No reviewer, no tester, nobody in this pipeline writes code. If the
+  outcome requires changes, the developer runs afterwards.
+- **Never skip agents.** All six run, every time. A partial quality
+  gate is a false quality gate. If a lens does not apply to the diff
+  (e.g., a pure-internal refactor with no trust boundary), the
+  specialist still runs and returns a short PASS — the fact that it
+  looked and found nothing is itself evidence.
+- **Present findings honestly.** Don't soften blocking issues. Don't
+  inflate advisory notes. Signal over noise.
 
 ## Workflow
 
@@ -89,70 +102,105 @@ git log <base>..HEAD --oneline
 Read the full diff. Identify:
 
 - Which files changed and how
+- Which test files were added or modified by the current diff
 - Which test files exist for the changed code
-- Whether the project has a test runner configured (`package.json` scripts,
-  test config files)
+- Whether the project has a test runner configured (`package.json`
+  scripts, test config files)
 
 ### Step 3: Deploy Agents
 
-Launch all three in parallel. Brief each precisely:
+Launch all six in parallel. Brief each precisely. Each specialist is a
+distinct identity — do not fan out a single briefing with differing
+"focus" overrides.
 
-**Reviewer 1 — Correctness:**
-
-> Scope: <changed files>. Diff baseline: <base branch or staged>.
-> Context: <summary of what changed and why, derived from commits>.
-> **Focus: correctness, security, and convention adherence.**
-> Ignore complexity and style preferences — the other reviewer handles that.
-
-**Reviewer 2 — Complexity:**
+**`reviewer-correctness`:**
 
 > Scope: <changed files>. Diff baseline: <base branch or staged>.
 > Context: <summary of what changed and why, derived from commits>.
-> **Focus: complexity and simplification opportunities.** Flag:
-> over-engineering, unnecessary abstractions, functions that do too much,
-> deep nesting, code that could be simpler without losing clarity.
-> Do NOT flag style preferences. Only flag genuine complexity.
+> Focus areas (optional): <specific correctness concerns suggested by
+> the diff, e.g., "concurrency on shared state introduced at <file>",
+> "new error path in <handler>">.
 
-**Tester:**
+**`reviewer-security`:**
 
-Determine mode based on test coverage:
+> Scope: <changed files>. Diff baseline: <base branch or staged>.
+> Context: <summary of what changed and why, derived from commits>.
+> Trust boundaries: <untrusted inputs that cross into this diff:
+> public HTTP, user input, filesystem, env vars, message queues — or
+> "none identified in this diff" if the change is internal>.
+> Deployment context: <public vs internal, multi-tenant vs
+> single-tenant, known data sensitivity — or "unknown" if not
+> determinable from the repo>.
 
-- Test files exist for the changed code → `mode: assess` (analyze gaps,
-  run existing tests)
-- No test files cover the changed code → `mode: write` (create tests,
-  then run them)
-- Mixed (some covered, some not) → `mode: write` (fill the gaps)
+**`reviewer-maintainability`:**
+
+> Scope: <changed files>. Diff baseline: <base branch or staged>.
+> Context: <summary of what changed and why, derived from commits>.
+> The agent reads project agent instructions (CLAUDE.md, AGENTS.md,
+> or equivalent) and neighboring code itself; do not pre-summarize
+> project conventions.
+
+**`tester-coverage`:**
 
 > Files changed: <list>. Test command: <from package.json or config>.
-> Test framework: <detected>. Mode: <write or assess>.
-> Dev notes: <brief context about what changed>.
+> Test framework: <detected>.
+> Dev notes: <brief context about what changed, including a summary
+> of the tests the developer wrote alongside the code>.
+
+**`tester-artisan`:**
+
+> Files changed: <list>. Test command: <from package.json or config>.
+> Test framework: <detected>.
+> Dev notes: <brief context about what changed, including a summary
+> of the tests the developer wrote alongside the code>.
+
+**`tester-architect`:**
+
+> Files changed: <list>. Test command: <from package.json or config>.
+> Test framework: <detected>.
+> Dev notes: <brief context about what changed, including a summary
+> of the tests the developer wrote alongside the code>.
 
 ### Step 4: Synthesize Results
 
-When all three agents return:
+When all six agents return:
 
-1. **Deduplicate** — If both reviewers flag the same issue, report it once
-   with the higher severity.
+1. **Preserve the lens label.** Every finding carries its lens tag
+   (`[correctness]`, `[security]`, `[maintainability]`, `[coverage]`,
+   `[craft]`, `[testability]`) so the reader can see which specialist
+   flagged what.
 
-2. **Categorize findings:**
-   - **Blocking** — Bugs, security issues, test failures. Must fix before shipping.
-   - **Warning** — Significant concerns. Should fix, but not necessarily now.
-   - **Advisory** — Suggestions, minor improvements. Nice to fix.
+2. **Deduplicate only at the intersection.** Two specialists flagging
+   literally the same line for literally the same reason collapse into
+   one finding tagged with both lenses. Two specialists seeing related
+   issues from different angles remain separate — do not compress
+   away the perspective.
 
-3. **Produce the Quality Report:**
+3. **Categorize findings:**
+   - **Blocking** — Critical reviewer findings, Blocking tester
+     findings, or test failures. Must fix before shipping.
+   - **Warning** — Significant reviewer concerns or Advisory tester
+     findings with material impact. Should fix, but not necessarily
+     now.
+   - **Advisory** — Minor improvements and polish. Nice to fix.
+
+4. **Produce the Quality Report:**
 
 ```markdown
 ## Quality Report: <scope description>
 
 **Verdict:** PASS | FAIL | CONDITIONAL
+**Review verdicts:** correctness: <...> | security: <...> | maintainability: <...>
+**Test advisory:** execution: <PASS|FAIL|N/A> | quality: <CLEAN|CONCERNS|BLOCKING>
+(coverage: <...> | craft: <...> | testability: <...>)
 
 ### Blocking
 
-- <findings that must be fixed — empty if none>
+- <findings that must be fixed — empty if none, lens labels preserved>
 
 ### Warnings
 
-- <findings that should be fixed — empty if none>
+- <findings that should be fixed — empty if none, lens labels preserved>
 
 ### Advisory
 
@@ -160,33 +208,53 @@ When all three agents return:
 
 ### Simplification Opportunities
 
-- <complexity reviewer's findings — empty if code is clean>
+- <maintainability findings tagged as complexity — empty if code is clean>
 
-### Test Results
+### Master Test Advisory
 
-- Tests run: <count> passed, <count> failed
-- Tests written: <count new tests, if tester was in write mode>
-- Coverage gaps: <remaining gaps identified>
+- **Test Specifications pending** — <count specs from tester-coverage>
+- **Existing tests to rewrite/split/delete** — <count from tester-artisan>
+- **Testability refactors** — <count from tester-architect>
+- Raw test run: <count> passed, <count> failed
+- Coverage gaps: <brief list>
 
 ### Verdict Reasoning
 
-<1-2 sentences explaining the verdict>
+<1-2 sentences explaining the verdict, naming which lens drove it>
 ```
 
 ### Step 5: Verdict
 
-- **PASS** — No blocking findings. Tests green. Ship it.
-- **FAIL** — Blocking findings or test failures. List what needs fixing.
-- **CONDITIONAL** — Warnings only, no blockers. Present findings and let
-  the user decide.
+The composite verdict is the **worst** across all six lenses and the
+raw test execution — one FAIL anywhere fails the gate.
+
+- **PASS** — All six lenses PASS/CLEAN and tests are green. Ship it.
+- **FAIL** — Any lens FAIL, any BLOCKING Quality from the tester trio,
+  or test failures. List what needs fixing with its lens label intact.
+- **CONDITIONAL** — Warnings/CONCERNS only, no blockers, tests green.
+  Present findings and let the user decide.
+
+**Special case: tester-architect BLOCKING.** When tester-architect
+returns Quality BLOCKING, the code cannot be cleanly tested in its
+current shape. Do not ask the developer to write more tests against
+broken architecture. The verdict is FAIL and the next step is an
+architect-led refactor, not more tests.
 
 ### Step 6: Suggest Next Steps
 
 Based on the verdict:
 
 - **PASS** → "All green. Ready for `/agentic:commit` or `/agentic:pr`."
-- **FAIL** → "These findings need fixing. Should I send the developer to
-  address them?" (If yes, transition to developer with specific findings.)
+- **FAIL (review findings)** → "Review findings need fixing. Should I
+  send the developer to address them?" (If yes, transition to
+  developer with consolidated, lens-labeled findings.)
+- **FAIL (test specifications)** → "The tester trio flagged
+  coverage/craft/testability work. Should I send the developer to
+  implement the specs and apply the rewrites?" (If yes, pass the
+  Master Test Advisory to the developer.)
+- **FAIL (tester-architect BLOCKING)** → "The code is not cleanly
+  testable. Route to architect for a testability refactor before
+  writing more tests."
 - **CONDITIONAL** → "Warnings but no blockers. Fix now or ship as-is?"
 - **Simplification findings** → "Simplification opportunities detected.
   `/agentic:simplify` can handle these."

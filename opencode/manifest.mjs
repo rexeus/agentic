@@ -15,8 +15,12 @@ export const AGENT_FILES = [
   "analyst.md",
   "architect.md",
   "developer.md",
-  "reviewer.md",
-  "tester.md",
+  "reviewer-correctness.md",
+  "reviewer-security.md",
+  "reviewer-maintainability.md",
+  "tester-coverage.md",
+  "tester-artisan.md",
+  "tester-architect.md",
   "refiner.md",
 ];
 
@@ -24,9 +28,11 @@ export const SKILL_NAMES = [
   "conventions",
   "git-conventions",
   "quality-patterns",
+  "review-foundations",
   "security",
   "setup",
-  "testing",
+  "test-advisory-format",
+  "testing-core",
 ];
 
 export const COMMAND_PREFIX = "agentic-";

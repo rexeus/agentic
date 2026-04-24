@@ -1,6 +1,6 @@
 # @rexeus/agentic
 
-A multi-agent development toolkit for Claude Code and OpenCode. Seven specialized
+A multi-agent development toolkit for Claude Code and OpenCode. Eleven specialized
 agents, one orchestrator, zero complexity.
 
 ## Why
@@ -67,9 +67,12 @@ and follows up with review and tests. You get working, tested code — not a pla
 about a plan.
 
 **3. Review.** `/agentic-review` (OpenCode) or `/agentic:review` (Claude Code)
-deploys parallel reviewers with different
-focus areas — correctness, security, conventions. Each reviewer works
-independently for unbiased analysis. High-confidence findings only.
+deploys **six specialists in parallel**: three reviewers (correctness,
+security, maintainability) and three testers (coverage, craft,
+testability). Each has its own identity and its own loaded skills.
+All six are advisory — none of them modifies files. High-confidence
+findings only, lens labels preserved. Composite verdict is the worst
+of the six.
 
 **4. Simplify.** `/agentic-simplify` (OpenCode) or `/agentic:simplify` (Claude Code)
 is where the craft happens. The Refiner
@@ -86,9 +89,10 @@ changes, then `/clear` and run it again. Each pass finds fewer
 issues until the codebase converges.
 
 **5. Verify.** `/agentic-verify` (OpenCode) or `/agentic:verify` (Claude Code)
-is the pre-ship quality gate. It runs
-correctness review, complexity analysis, and tests in parallel. One command,
-three perspectives, a clear verdict: PASS, FAIL, or CONDITIONAL.
+is the pre-ship quality gate. It runs the reviewer trio and the
+tester trio — six specialists in parallel — plus a full test-suite
+execution. One command, six perspectives, a clear verdict: PASS,
+FAIL, or CONDITIONAL.
 
 **6. Commit & PR.** `/agentic-commit` + `/agentic-pr` (OpenCode) or
 `/agentic:commit` + `/agentic:pr` (Claude Code) handle commit and PR flow.
@@ -109,18 +113,27 @@ independently.
 
 ## The Agents
 
-Seven cognitive modes, one orchestrator. Each answers a different question:
+Eleven cognitive modes, one orchestrator. Each answers a different question:
 
 ```
-Scout       → "What is here?"              Fast codebase reconnaissance
-Analyst     → "How does this work?"        Traces logic and data flows
-Architect   → "How should it be?"          Designs solutions, evaluates trade-offs
-Developer   → "Here's the implementation." The only agent that writes source code
-Reviewer    → "Is this correct?"           Reviews for quality, correctness, and conventions
-Tester      → "Does it actually work?"     Writes and runs tests
-Refiner     → "How can this be simpler?"   Distills code to its essence
-Lead        → Orchestrates all above       Delegates, synthesizes, keeps you in the loop
+Scout                     → "What is here?"              Fast codebase reconnaissance
+Analyst                   → "How does this work?"        Traces logic and data flows
+Architect                 → "How should it be?"          Designs solutions, evaluates trade-offs
+Developer                 → "Here's the code + tests."   The only agent that writes source code or tests
+Reviewer (correctness)    → "Does it work?"              Runtime behavior, edge cases, the crash path
+Reviewer (security)       → "Can it be broken?"          Attacker model, trust boundaries, OWASP
+Reviewer (maintainability)→ "Will it age well?"          Complexity, coupling, readability
+Tester (coverage)         → "What is not yet tested?"    Coverage gaps, missing scenarios
+Tester (artisan)          → "Do the tests read well?"    Test craft, AAA, clarity
+Tester (architect)        → "Is the code testable?"      Design-for-test, seams, dependencies
+Refiner                   → "How can this be simpler?"   Distills code to its essence
+Lead                      → Orchestrates all above       Delegates, synthesizes, keeps you in the loop
 ```
+
+After the developer ships code **and the tests they write alongside it**, the
+reviewer trio and the tester trio fan out in parallel: six disjoint advisory
+lenses on the same change. Only the developer writes code and tests; the six
+specialists never modify files. One FAIL anywhere fails the gate.
 
 The Lead runs as your main thread. In Claude Code, that is configured through
 `settings.json`. When you describe a task, the Lead decides which specialists
@@ -129,11 +142,11 @@ executes.
 
 In OpenCode, `lead` is installed as a first-class primary agent. The rest of
 the team is installed as hidden subagents so the experience still flows through
-one visible orchestrator instead of eight competing entry points.
+one visible orchestrator instead of competing entry points.
 
 Claude Code agents also have **Stop hooks** — LLM-based guardrails that check
 whether the agent stayed in its role before returning results. The Developer is
-checked against planning. The Reviewer against implementing. The Architect
+checked against planning. The reviewer trio against implementing. The Architect
 against writing tests. These are probabilistic guardrails, not hard walls — but
 they catch most role drift.
 
@@ -142,14 +155,16 @@ they catch most role drift.
 Skills are background knowledge that agents load automatically. They inform
 decisions without cluttering your workflow.
 
-| Skill              | Purpose                                                    |
-| ------------------ | ---------------------------------------------------------- |
-| `conventions`      | Code style, naming, structure, types, error handling       |
-| `quality-patterns` | Anti-patterns, coupling, duplication, positive patterns    |
-| `security`         | Injection, auth, data exposure, input validation           |
-| `testing`          | Test philosophy, layers, doubles, anti-patterns            |
-| `git-conventions`  | Conventional Commits, branch naming, PR descriptions       |
-| `setup`            | Getting started with Agentic, workflow, and agent overview |
+| Skill                  | Purpose                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| `conventions`          | Code style, naming, structure, types, error handling       |
+| `quality-patterns`     | Anti-patterns, coupling, duplication, positive patterns    |
+| `security`             | Injection, auth, data exposure, input validation           |
+| `testing-core`         | Test philosophy, F.I.R.S.T, doubles, anti-patterns         |
+| `test-advisory-format` | Master Test Advisory template used by the tester trio      |
+| `review-foundations`   | Confidence, severity, verdict, output shape for reviewers  |
+| `git-conventions`      | Conventional Commits, branch naming, PR descriptions       |
+| `setup`                | Getting started with Agentic, workflow, and agent overview |
 
 Agentic is compatible with the [`skills` CLI](https://github.com/vercel-labs/skills).
 You can use it to update skills via `npx skills update` or install additional

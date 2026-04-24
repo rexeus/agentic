@@ -79,14 +79,21 @@ verifying tests after each change.
 
 ### Step 5: Verify
 
-Deploy the **tester** to confirm:
+Run the existing test suite, then deploy **tester-artisan** and
+**tester-architect** in parallel to confirm:
 
-- All existing tests still pass
-- No behavior has changed
-- Edge cases are still covered
+- All existing tests still pass (raw execution: `pnpm test` etc.)
+- No behavior has changed (tester-architect verifies testability did
+  not regress)
+- Test craft stayed intact (tester-artisan confirms no readability
+  drift introduced by the simplification)
 
-If the tester finds regressions, send the refiner back to revert
-the problematic simplification.
+`tester-coverage` is not deployed for simplify — the refiner adds no
+behavior, so coverage is unchanged by construction.
+
+If either tester finds regressions, send the refiner back to revert
+the problematic simplification. If tester-artisan specifies a test
+rewrite, the developer implements it in a separate follow-up.
 
 ### Step 6: Summary
 

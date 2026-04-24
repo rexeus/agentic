@@ -1,6 +1,6 @@
 {
   "name": "@rexeus/agentic",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Multi-agent development toolkit for Claude Code and OpenCode. Specialized agents, conventions, review workflows, and quality guardrails for TypeScript and JavaScript projects.",
   "keywords": [
     "agentic-coding",

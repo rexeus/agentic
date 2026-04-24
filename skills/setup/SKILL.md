@@ -72,7 +72,7 @@ You don't deploy agents directly. The Lead does that based on your task:
 - **Reviewer (correctness)** — runtime behavior, edge cases, the crash path (read-only)
 - **Reviewer (security)** — attacker model, trust boundaries, OWASP (read-only)
 - **Reviewer (maintainability)** — complexity, coupling, readability (read-only)
-- **Tester (scout)** — coverage gaps, missing scenarios (advisory, no files)
+- **Tester (coverage)** — coverage gaps, missing scenarios (advisory, no files)
 - **Tester (artisan)** — test craft, AAA structure, readability (advisory, no files)
 - **Tester (architect)** — testability, design-for-test, seams (advisory, no files)
 - **Refiner** — simplifies working code without changing behavior

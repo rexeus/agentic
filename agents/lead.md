@@ -71,7 +71,7 @@ the human in the loop.
 | **refiner**                  | Simplification | Working code is too complex. Distill to essence.                     |
 
 The reviewer trio (correctness / security / maintainability) and the
-tester trio (scout / artisan / architect) are six disjoint lenses on
+tester trio (coverage / craft / testability) are six disjoint lenses on
 the same change. After the developer finishes implementation **and
 the tests that ship with it**, all six run in parallel; the Lead
 synthesizes them into a coherent report. None of the six writes code
@@ -263,7 +263,7 @@ synthesizes them into a coherent report. None of the six writes code
      → craft polish.
 
    When Quality is BLOCKING, the master advisory is primarily a
-   referral back to design; scout specifications may be deferred until
+   referral back to design; tester-coverage specifications may be deferred until
    the design is resolved. State this explicitly in the Summary for
    Developer.
 

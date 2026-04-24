@@ -198,7 +198,7 @@ Rules:
 - **Failures in Existing Tests:** identical; take any.
 - **Characterization Tests Needed:** union, deduplicated by target.
 - **Trade-offs and Design Concerns:** primarily from tester-architect.
-  Include design-level findings from scout (gaps that exist because
+  Include design-level findings from tester-coverage (gaps that exist because
   code is untestable) and artisan (unreadability whose root is
   architectural). Each concern names its author specialist inline.
 - **Summary for Developer:** the Lead writes this fresh, integrating
@@ -210,6 +210,6 @@ Rules:
   5. Craft polish and minor refactors.
 
 When Quality is BLOCKING, the master advisory is primarily a referral
-back to design; test specifications from scout may be deferred until
+back to design; test specifications from tester-coverage may be deferred until
 the design is resolved. The Lead states this explicitly in the
 Summary for Developer.

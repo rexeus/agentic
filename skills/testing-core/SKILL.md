@@ -770,7 +770,7 @@ locality of failure.
 ## Integration With the Tester Trio
 
 After you finish writing code and tests, the Lead dispatches the
-tester trio (scout / artisan / architect). Their advisories cover:
+tester trio (coverage / craft / testability). Their advisories cover:
 
 - **tester-coverage:** scenarios you did not cover (new specifications)
 - **tester-artisan:** craft issues in the tests you wrote (rewrite

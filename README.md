@@ -123,7 +123,7 @@ Developer                 → "Here's the code + tests."   The only agent that w
 Reviewer (correctness)    → "Does it work?"              Runtime behavior, edge cases, the crash path
 Reviewer (security)       → "Can it be broken?"          Attacker model, trust boundaries, OWASP
 Reviewer (maintainability)→ "Will it age well?"          Complexity, coupling, readability
-Tester (scout)            → "What is not yet tested?"    Coverage gaps, missing scenarios
+Tester (coverage)         → "What is not yet tested?"    Coverage gaps, missing scenarios
 Tester (artisan)          → "Do the tests read well?"    Test craft, AAA, clarity
 Tester (architect)        → "Is the code testable?"      Design-for-test, seams, dependencies
 Refiner                   → "How can this be simpler?"   Distills code to its essence

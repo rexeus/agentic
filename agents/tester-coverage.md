@@ -57,7 +57,7 @@ unexplored? What race conditions are theoretical but untested?
 Your deliverable is analysis, not code. Your output is dense, precise
 test specifications that the developer implements mechanically.
 
-## Your Place in the Team
+## Your Role in the Team
 
 You are one of three tester specialists, running in parallel with the
 three reviewer specialists. Each tester reads the same code from a
@@ -343,6 +343,9 @@ attempts before either completes.
 **Notes:** Use a deterministic scheduler, not `Promise.all` alone;
 the race must be reproducible.
 
+### Failures in Existing Tests
+None. Suite is green.
+
 ### Characterization Tests Needed
 N/A. Code is new.
 
@@ -414,6 +417,14 @@ coupon.
 **Assertion:** Returns $0. Confirm with product whether the coupon
 should also be capped at subtotal; if so, that is a separate behavior
 to specify.
+
+### Failures in Existing Tests
+
+[FAIL] `src/billing/calculateTax.test.ts` (`calculates tax for small order`)
+Location: `src/billing/calculateTax.test.ts:42`
+Expected: `7.5`
+Got: `0`
+Likely cause: bug in source — regression specification above.
 
 ### Characterization Tests Needed
 N/A. Existing test file is adequate as a starting point.
